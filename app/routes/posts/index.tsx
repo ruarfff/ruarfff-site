@@ -8,10 +8,9 @@ export const loader = async () => {
 
 export default function Posts() {
   let posts = useLoaderData<Post[]>();
-  console.log(posts);
   return (
     <div>
-      <h1>Posts</h1>
+      <h1>Blog Posts</h1>
       <ul>
         {posts.map((post) => (
           <li key={post.slug}>

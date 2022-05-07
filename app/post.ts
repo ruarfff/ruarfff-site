@@ -31,7 +31,9 @@ export async function getPosts() {
   const dir = await fs.readdir(postsPath);
   return Promise.all(
     dir.map(async (filename) => {
-      const file = await fs.readFile(path.join(postsPath, filename));
+      const file = await fs.readFile(
+        path.join(postsPath, filename, "index.md")
+      );
       const { attributes } = parseFrontMatter(file.toString());
       invariant(
         isValidPostAttributes(attributes),
@@ -46,7 +48,7 @@ export async function getPosts() {
 }
 
 export async function getPost(slug: string) {
-  const filepath = path.join(postsPath, slug + ".md");
+  const filepath = path.join(postsPath, slug, "index.md");
   const file = await fs.readFile(filepath);
   const { attributes, body } = parseFrontMatter(file.toString());
   invariant(
