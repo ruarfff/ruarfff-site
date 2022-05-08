@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { useOptionalUser } from "~/utils";
 
 export let meta: MetaFunction = () => {
