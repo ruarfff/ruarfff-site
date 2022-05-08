@@ -9,7 +9,7 @@ export default function About() {
           <div
             className="mx-auto -mt-16 block h-48 w-48 rounded-full bg-cover bg-center shadow-xl lg:hidden"
             style={{
-              backgroundImage: "https://source.unsplash.com/MP0IUfwrn0A",
+              backgroundImage: `url("images/profile-pic.jpg")`,
             }}
           ></div>
 
