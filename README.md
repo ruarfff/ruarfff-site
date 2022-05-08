@@ -7,10 +7,18 @@
 ```sh
 cp .env.example .env
 
+npm run docker
 npm run setup
+npm run build
 ```
 
 ## Development
+
+You do need to have the postgres database running.
+
+```
+npm run docker
+```
 
 From your terminal:
 

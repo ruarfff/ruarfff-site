@@ -1,3 +1,9 @@
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Link,
   Links,
@@ -6,13 +12,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "remix";
-import { json } from "@remix-run/node";
-import type {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
+} from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import appStylesheetUrl from "./styles/app.css";
