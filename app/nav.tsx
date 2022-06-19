@@ -49,7 +49,7 @@ export default function Nav({ currentPageName = "Home" }: NavProps) {
   return (
     <nav className="rounded border-gray-200 bg-white px-2 py-2.5 dark:bg-gray-800 sm:px-4">
       <div className="container mx-auto flex flex-wrap items-center justify-between">
-        <a href="https://flowbite.com" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <img
             src="/images/icon.png"
             className="mr-3 h-6 sm:h-9"
@@ -58,7 +58,8 @@ export default function Nav({ currentPageName = "Home" }: NavProps) {
           <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
             Ruarfff
           </span>
-        </a>
+        </Link>
+
         <button
           data-collapse-toggle="mobile-menu"
           type="button"
