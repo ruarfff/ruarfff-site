@@ -223,7 +223,7 @@ plt.show()
 
 **Example output:**
 
-![Sentiment pie chart showing neg and pos](./sent-example-pie.png)
+![Sentiment pie chart showing neg and pos](/images/slack-sentiment/sent-example-pie.png)
 
 This was just to show an example but it might also demonstrate the importance of the next step. The results we got from the data in its current state may not have been very accurate. Let's see what we can do to clean up the data and reduce the noise in there.
 
@@ -240,7 +240,7 @@ fdist.plot(30,cumulative=False)
 plt.show()
 ```
 
-![Word plot](./sent-word-plot.png)
+![Word plot](/images/slack-sentiment/sent-word-plot.png)
 
 If you run that, you probably see a lot of words like "I", "if", "me" etc. Also maybe some punctuations. These are not too useful for our analysis.
 
@@ -306,7 +306,7 @@ fdist.plot(30,cumulative=False)
 plt.show()
 ```
 
-![Updated work plot](./sent-word-plot-2.png)
+![Updated work plot](/images/slack-sentiment/sent-word-plot-2.png)
 
 ## Training Our Own Model
 

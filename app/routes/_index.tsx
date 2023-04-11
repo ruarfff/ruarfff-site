@@ -1,17 +1,9 @@
-import { Link } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/node";
-import { useOptionalUser } from "~/utils";
+import type { V2_MetaFunction } from "@remix-run/node";
 import Nav from "~/nav";
 
-export let meta: MetaFunction = () => {
-  return {
-    title: "Ruairí's Site",
-    description: "Welcome to Ruairí's personal site!",
-  };
-};
+export const meta: V2_MetaFunction = () => [{ title: "Ruairí's Site" }];
 
 export default function Index() {
-  const user = useOptionalUser();
   return (
     <>
       <Nav currentPageName="Home" />

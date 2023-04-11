@@ -50,7 +50,7 @@ This is a useful example as we can configure it to use GitHub auth to allow user
 
 By default this example app is expecting 3 environment variables to exist.
 
-`GITHUB_TOKEN `
+`GITHUB_TOKEN`
 `AUTH_GITHUB_CLIENT_ID`
 `AUTH_GITHUB_CLIENT_SECRET`
 
@@ -73,11 +73,11 @@ yarn dev
 [1] Backend failed to start up, Error: Failed to initialize github auth provider, Missing required config value at 'auth.providers.github.development.clientId'
 ```
 
-To create secrets and follow along you will need a GitHub account. Go here https://github.com/settings/applications/new
+To create secrets and follow along you will need a GitHub account. Go here <https://github.com/settings/applications/new>
 
 Fill it in like this:
 
-![Register OAuth App](./1-gh-auth.png)
+![Register OAuth App](/images/team-secrets/1-gh-auth.png)
 
 The local UI for the app is:
 
@@ -89,11 +89,11 @@ The backend runs locally on port 7000 and the callback URL for it is:
 
 On the next page generate a new client secret. Make note of the client id and the secret.
 
-You'll need a token for creating repositories. Go here https://github.com/settings/tokens/new
+You'll need a token for creating repositories. Go here <https://github.com/settings/tokens/new>
 
 Creating a token that can work with repositories should be enough to test things out:
 
-![Create Token](./2-token.png)
+![Create Token](/images/team-secrets/2-token.png)
 
 Take note of the token.
 
@@ -213,11 +213,11 @@ source secrets && yarn dev
 
 All going well, you should have a login page:
 
-![Backstage login](./3-oauth-app.png)
+![Backstage login](/images/team-secrets/3-oauth-app.png)
 
-![GitHub OAuth popup](./4-popup.png)
+![GitHub OAuth popup](/images/team-secrets/4-popup.png)
 
-![Logged in](./5-backstage.png)
+![Logged in](/images/team-secrets/5-backstage.png)
 
 ## Backing Up Secrets <a name="backing-up-secrets"></a>
 
@@ -253,7 +253,7 @@ You should now see the encrypted secrets up in the repo.
 
 Here's an example in a temporary GitHub repo I created for this:
 
-![Secrets backed up](./6-repo.png)
+![Secrets backed up](/images/team-secrets/6-repo.png)
 
 ## Adding a Team Member <a name="adding-a-team-member"></a>
 
