@@ -26,14 +26,14 @@ export const links: LinksFunction = () => {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className="bg-gray-900 font-mono text-green-400">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

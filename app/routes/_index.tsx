@@ -1,20 +1,41 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import Nav from "~/nav";
 
+import { Link, useLoaderData } from "@remix-run/react";
+
+import type { Post } from "~/post";
+import { getPosts } from "~/post";
 export const meta: V2_MetaFunction = () => [{ title: "Ruairí's Site" }];
 
-export default function Index() {
+export const loader = async () => {
+  return getPosts();
+};
+
+export default function Posts() {
+  let posts = useLoaderData<Post[]>();
   return (
-    <>
-      <Nav currentPageName="Home" />
-      <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
-        <div className="relative sm:pb-16 sm:pt-8">
-          <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl"></div>
-            <h2 className="text-justify">Welcome!</h2>
-          </div>
-        </div>
-      </main>
-    </>
+    <div className="container mx-auto max-w-4xl px-4 py-8">
+      <h1 className="mb-8 text-4xl text-orange-500">Blog Posts</h1>
+      <ul>
+        {posts
+          .sort((a, b) => (a.date > b.date ? -1 : 1))
+          .map((post) => (
+            <li
+              key={post.slug}
+              className="mb-4 flex items-center justify-between rounded border border-gray-600 bg-gray-800 p-4"
+            >
+              <div>
+                <Link
+                  to={post.slug}
+                  className="text-2xl font-semibold text-green-300 no-underline hover:underline"
+                >
+                  {post.title}
+                </Link>
+                <p className="mt-2 text-green-200">{post.description}</p>
+              </div>
+              <span className="text-yellow-400">{post.date}</span>
+            </li>
+          ))}
+      </ul>
+    </div>
   );
 }

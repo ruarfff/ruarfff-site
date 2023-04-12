@@ -1,16 +1,20 @@
-import path from "path";
-import fs from "fs/promises";
 import parseFrontMatter from "front-matter";
+import fs from "fs/promises";
+import path from "path";
 import invariant from "tiny-invariant";
 
 export type Post = {
   slug: string;
   title: string;
+  date: string;
   markdown: string;
+  description?: string;
 };
 
 export type PostMarkdownAttributes = {
   title: string;
+  date: string;
+  description?: string;
 };
 
 const postsPath = path.join(__dirname, "..", "posts");
@@ -36,6 +40,8 @@ export async function getPosts() {
       return {
         slug: filename.replace(/\.md$/, ""),
         title: attributes.title,
+        description: attributes.description,
+        date: attributes.date,
       };
     })
   );
@@ -49,6 +55,11 @@ export async function getPost(slug: string) {
     isValidPostAttributes(attributes),
     `Post ${filepath} is missing attributes`
   );
-
-  return { slug, markdown: body, title: attributes.title };
+  return {
+    slug,
+    markdown: body,
+    title: attributes.title,
+    description: attributes.description,
+    date: attributes.date,
+  };
 }

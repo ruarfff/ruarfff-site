@@ -2,6 +2,12 @@ const { parse } = require("path");
 
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
+  ignoredRouteFiles: ["**/.*"],
+  server:
+    process.env.NETLIFY || process.env.NETLIFY_LOCAL
+      ? "./server.js"
+      : undefined,
+  serverBuildPath: ".netlify/functions-internal/server.js",
   cacheDirectory: "./node_modules/.cache/remix",
   future: {
     v2_errorBoundary: true,
@@ -9,7 +15,6 @@ module.exports = {
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
   },
-  ignoredRouteFiles: ["**/.*", "**/*.css", "**/*.test.{js,jsx,ts,tsx}"],
   serverDependenciesToBundle: [
     /^rehype.*/,
     /^remark.*/,
@@ -30,5 +35,8 @@ module.exports = {
     /^is-plain-obj*/,
     /^react-syntax-highlighter*/,
     /^trim-lines*/,
+    /^remark-gfm*/,
+    /^ccount*/,
+    /^markdown-table*/,
   ],
 };
