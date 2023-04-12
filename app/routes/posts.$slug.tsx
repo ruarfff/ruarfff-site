@@ -23,7 +23,7 @@ export default function PostSlug() {
           <span className="text-xs text-yellow-400">{post.date}</span>
         </div>
       </header>
-      <article className="prose lg:prose-xl rounded border border-gray-600 bg-gray-800 p-6 leading-relaxed">
+      <article className="prose rounded border border-gray-600 bg-gray-800 p-6 leading-relaxed lg:prose-xl">
         <ReactMarkdown
           children={post.markdown}
           remarkPlugins={[remarkGfm]}

@@ -1,16 +1,16 @@
 {
-  "exclude": ["./cypress", "./cypress.config.ts"],
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["./cypress/*", "./cypress.config.ts"],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "server.js", "remix.init/server.js"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "types": ["vitest/globals"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ES2019",
+    "skipLibCheck": true,
     "strict": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
@@ -18,7 +18,6 @@
     "paths": {
       "~/*": ["./app/*"]
     },
-    "skipLibCheck": true,
 
     // Remix takes care of building everything in `remix build`.
     "noEmit": true
