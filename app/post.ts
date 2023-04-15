@@ -17,7 +17,7 @@ export type PostMarkdownAttributes = {
   description?: string;
 };
 
-const postsPath = path.join(__dirname, "..", "posts");
+const postsPath = path.resolve("posts");
 
 function isValidPostAttributes(
   attributes: any
@@ -26,25 +26,30 @@ function isValidPostAttributes(
 }
 
 export async function getPosts() {
-  const dir = await fs.readdir(postsPath);
-  return Promise.all(
-    dir.map(async (filename) => {
-      const file = await fs.readFile(
-        path.join(postsPath, filename, "index.md")
-      );
-      const { attributes } = parseFrontMatter(file.toString());
-      invariant(
-        isValidPostAttributes(attributes),
-        `${filename} has bad meta data!`
-      );
-      return {
-        slug: filename.replace(/\.md$/, ""),
-        title: attributes.title,
-        description: attributes.description,
-        date: attributes.date,
-      };
-    })
-  );
+  try {
+    const dir = await fs.readdir(postsPath);
+    return Promise.all(
+      dir.map(async (filename) => {
+        const file = await fs.readFile(
+          path.join(postsPath, filename, "index.md")
+        );
+        const { attributes } = parseFrontMatter(file.toString());
+        invariant(
+          isValidPostAttributes(attributes),
+          `${filename} has bad meta data!`
+        );
+        return {
+          slug: filename.replace(/\.md$/, ""),
+          title: attributes.title,
+          description: attributes.description,
+          date: attributes.date,
+        };
+      })
+    );
+  } catch (e) {
+    console.log(e);
+    return Promise.resolve([]);
+  }
 }
 
 export async function getPost(slug: string) {

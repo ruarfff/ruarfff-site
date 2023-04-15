@@ -1,6 +1,9 @@
 [build]
-command = "remix build && cp _app_redirects public/_redirects"
+command = "npm run build && cp _app_redirects public/_redirects"
 publish = "public"
+
+[functions]
+included_files = ["posts/**"]
 
 [dev]
 command = "npm run dev"
