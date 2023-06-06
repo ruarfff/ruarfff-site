@@ -4,22 +4,22 @@ date: "2022-08-26"
 description: Understanding async python with asyncio and fastapi
 ---
 
-Writing asynchronous code in python is quite powerful and can perform pretty well if you use something like [uvloop](https://uvloop.readthedocs.io/):
+Writing asynchronous code in Python is quite powerful and can perform pretty well if you use something like [uvloop](https://uvloop.readthedocs.io/):
 
 > uvloop makes asyncio fast. In fact, it is at least 2x faster than nodejs, gevent, as well as any other Python asynchronous framework. The performance of uvloop-based asyncio is close to that of Go programs.
 
-Writing asynchronous code in python is also pretty easy to mess up.
+Writing asynchronous code in Python is also pretty easy to mess up.
 
-This post is an attempt to understand async python a little better and make it easier to spot the common mistakes.
+This post is an attempt to understand async Python a little better and make it easier to spot the common mistakes.
 
-There's a repo if you'd like to have the code examples: <https://github.com/ruarfff/understanding-python-async>
+There's a repo if you'd like to have the code examples: <https://github.com/ruarfff/understanding-python-async>.
 
-In this post we will look at:
+In this post, we will look at:
 
 - async/concurrent vs parallel
-- interesting things to know about async in python
+- interesting things to know about async in Python
 - async with FastAPI
-- what do do if something you use doesn't support async
+- what to do if something you use doesn't support async
 
 ## Coding along
 
@@ -28,7 +28,7 @@ Grab the sample code:
 - `git clone git@github.com:ruarfff/understanding-python-async.git && cd understanding-python-async`
 - You should also have [curl](https://curl.se/) installed
 
-You can use docker (recommended) or setup your own python environment.
+You can use docker (recommended) or setup your Python environment.
 
 ### With docker
 
@@ -38,13 +38,13 @@ make build
 
 ### Without docker
 
-If you're not using docker, make sure to have python >= 3.8 installed.
+If you're not using docker, make sure to have Python >= 3.8 installed.
 
-You should be using a unix like shell e.g. Linux, Mac, WSL.
+You should be using a unix-like shell e.g. Linux, Mac, WSL.
 
 - [pyenv](https://github.com/pyenv/pyenv)
 
-```
+```shell
 pyenv install 3.10.6
 
 pyenv global 3.10.6
@@ -52,7 +52,7 @@ pyenv global 3.10.6
 
 - Setup a [virtual environment](https://docs.python.org/3/library/venv.html) and run all commands in this context
 
-```
+```shell
 python -m venv ./.venv
 
 source .venv/bin/activate
@@ -60,7 +60,7 @@ source .venv/bin/activate
 
 - Install requirements `pip install -r requirements.txt`
 
-In the examples below, runt he python scripts directly instead of using `make`.
+In the examples below, run the python scripts directly instead of using `make`.
 
 ## Async Vs Parallel
 
@@ -256,7 +256,7 @@ The downside is this can affect performance.
 
 > In hindsight, the GIL is not ideal, since it prevents multithreaded CPython programs from taking full advantage of multiprocessor systems in certain situations.
 
-There are ways around this. Some libraries aren't effected by the GIL e.g. [Numpy.](https://numpy.org/).
+There are ways around this. Some libraries aren't affected by the GIL e.g. [Numpy.](https://numpy.org/).
 
 When writing a web app with FastAPI, using async/await and a library like [uvicorn](https://www.uvicorn.org/), the GIL is less of an issue as we are primarily IO bound.
 
