@@ -19,7 +19,7 @@ export default function PostSlug() {
   return (
     <div className={`min-h-screen flex flex-col`}>
       <main className="flex-grow p-6">
-        <article className="max-w-2xl mx-auto">
+        <article className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-semibold mb-4">{post.title}</h1>
           <p className="mb-4">{post.date}</p>
 
