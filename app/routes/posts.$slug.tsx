@@ -3,7 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
-import remarkGfm from "remark-gfm";
+import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
 import { getPost } from "~/post";
 
@@ -15,18 +15,15 @@ export const loader: LoaderFunction = async ({ params }) => {
 export default function PostSlug() {
   const post = useLoaderData();
 
+
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
-      <header className="mb-12">
-        <h1 className="mb-2 text-4xl text-orange-500">{post.title}</h1>
-        <div className="flex items-center space-x-4">
-          <span className="text-xs text-yellow-400">{post.date}</span>
-        </div>
-      </header>
-      <article className="prose max-w-none rounded border border-gray-600 bg-gray-800 p-6 leading-relaxed lg:prose-xl">
-        <ReactMarkdown
-          children={post.markdown}
-          remarkPlugins={[remarkGfm]}
+    <div className={`min-h-screen flex flex-col`}>
+      <main className="flex-grow p-6">
+        <article className="max-w-2xl mx-auto">
+          <h1 className="text-3xl font-semibold mb-4">{post.title}</h1>
+          <p className="mb-4">{post.date}</p>
+
+          <ReactMarkdown remarkPlugins={[gfm]} className="prose dark:prose-dark max-w-none"
           components={{
             code({ node, inline, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || "");
@@ -44,9 +41,18 @@ export default function PostSlug() {
                 </code>
               );
             },
-          }}
-        />
-      </article>
+          }}>
+            {post.markdown}
+          </ReactMarkdown>
+
+
+        </article>
+      </main>
+
+      <footer className="p-6 border-t border-gray-200 dark:border-gray-700">
+        © {new Date().getFullYear()}, My Blog
+      </footer>
     </div>
   );
+
 }
