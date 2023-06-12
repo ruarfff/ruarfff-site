@@ -1,6 +1,6 @@
 ---
 title: "Deploying an app to Elastic Beanstalk with Codeship"
-excerptOther: "Set up a CI pipeline for AWS with Elastic Beanstalk & CodeShip."
+description: "Set up a CI pipeline for AWS with Elastic Beanstalk & CodeShip."
 date: "2018-03-26"
 tags:
   - aws

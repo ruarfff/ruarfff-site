@@ -49,9 +49,6 @@ export default function PostSlug() {
         </article>
       </main>
 
-      <footer className="p-6 border-t border-gray-200 dark:border-gray-700">
-        © {new Date().getFullYear()}, My Blog
-      </footer>
     </div>
   );
 

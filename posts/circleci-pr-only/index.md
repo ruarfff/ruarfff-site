@@ -1,6 +1,6 @@
 ---
 title: "How to only run a job on a pull request in CircleCI"
-excerptOther: "It's tricky to conditionally run jobs in CircleCI. This is one method that might be useful in some cases."
+description: "It's tricky to conditionally run jobs in CircleCI. This is one method that might be useful in some cases."
 postDate: "2021-07-27"
 date: "2021-07-27"
 tags:

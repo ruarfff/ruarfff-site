@@ -1,6 +1,6 @@
 ---
 title: "Start Game Coding in ES6"
-excerptOther: "Setting up phaser projects quickly"
+description: "Setting up phaser projects quickly"
 postDate: "2016-11-10"
 date: "2016-11-10"
 tags:

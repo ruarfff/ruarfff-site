@@ -39,7 +39,7 @@ export async function getPosts() {
           `${filename} has bad meta data!`
         );
         return {
-          slug: filename.replace(/\.md$/, ""),
+          slug:'/posts/' + filename.replace(/\.md$/, ""),
           title: attributes.title,
           description: attributes.description,
           date: attributes.date,

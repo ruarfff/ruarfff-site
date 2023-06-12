@@ -1,6 +1,6 @@
 ---
 title: "About Communication"
-excerptOther: "Is Code Communication?"
+description: "Is Code Communication?"
 postDate: "2016-03-23"
 date: "2016-03-23"
 tags:

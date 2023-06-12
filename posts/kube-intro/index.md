@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Kubernetes"
-excerptOther: "A quick intro to using Kubernetes and some of the features it has"
+description: "A quick intro to using Kubernetes and some of the features it has"
 postDate: "2017-06-27"
 date: "2017-06-27"
 tags:
