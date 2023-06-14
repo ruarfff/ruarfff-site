@@ -1,4 +1,5 @@
 import type { LinksFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -6,10 +7,17 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  useLocation,
 } from "@remix-run/react";
-
+import { useEffect } from "react";
+import * as gtag from "~/utils/gtags.client";
 import appStylesheetUrl from "./styles/app.css";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
+
+export const loader = async () => {
+  return json({ gaTrackingId: "G-J8S0YBL54N" });
+};
 
 export const links: LinksFunction = () => {
   return [
@@ -25,6 +33,16 @@ export const links: LinksFunction = () => {
 };
 
 export default function App() {
+
+  const location = useLocation();
+  const { gaTrackingId } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if (gaTrackingId?.length) {
+      gtag.pageview(location.pathname, gaTrackingId);
+    }
+  }, [location, gaTrackingId]);
+
   return (
     <html lang="en">
       <head>
@@ -34,9 +52,9 @@ export default function App() {
         <Links />
       </head>
       <body className="font-mono">
-        <script
+      <script
               async
-              src={`https://www.googletagmanager.com/gtag/js?id=G-J8S0YBL54N`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
             />
             <script
               async
@@ -47,7 +65,7 @@ export default function App() {
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
 
-                gtag('config', 'G-J8S0YBL54N', {
+                gtag('config', '${gaTrackingId}', {
                   page_path: window.location.pathname,
                 });
               `,
