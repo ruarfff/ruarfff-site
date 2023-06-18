@@ -8,7 +8,7 @@ tags:
   - fediverse
 ---
 
-If you go to a social media site like Twitter, you set up an account and just start using it. Mastodon is like Twitter in functionality but very different in how it works. One key difference is Mastodon is a protocol for building social media sites rather than being the site.
+If you go to a social media site like Twitter, you set up an account and just start using it. Mastodon is like Twitter in as lot of ways but very different in how it works. One key difference is Mastodon is a protocol for building social media sites rather than being the site.
 
 Because Mastodon is a protocol, there are many sites using it. It is possible to interact with any of them using a Mastodon client. They are all compatible with eachother because of the protocol. This setup has become known as the Fediverse. It's even possible for you to [set up your own Mastodon server](https://docs.joinmastodon.org/user/run-your-own/) or build your own client.
 
