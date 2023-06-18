@@ -1,3 +1,7 @@
+import { V2_MetaFunction } from "@remix-run/node";
+
+export const meta: V2_MetaFunction = () => [{ title: "About | Ruairí's Site" }];
+
 export default function About() {
   return (
     <div className="mx-auto my-32 flex h-auto max-w-4xl flex-wrap items-center lg:my-0 lg:h-screen">

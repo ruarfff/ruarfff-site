@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction, V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -7,9 +7,16 @@ import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
 import { getPost } from "~/post";
 
+
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.slug, "expected params.slug");
   return getPost(params.slug);
+};
+
+export const meta: V2_MetaFunction<typeof loader> = ({
+  data,
+}) => {
+  return [{ title: data.title + "| Ruairí's Site" }];
 };
 
 export default function PostSlug() {

@@ -1,4 +1,4 @@
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -12,11 +12,23 @@ import {
 } from "@remix-run/react";
 import { useEffect } from "react";
 import * as gtag from "~/utils/gtags.client";
+import Header from "./header/header";
 import appStylesheetUrl from "./styles/app.css";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 export const loader = async () => {
   return json({ gaTrackingId: "G-J8S0YBL54N" });
+};
+
+
+export const meta: V2_MetaFunction = () => {
+  return [
+    {
+      name: "viewport",
+      content: "width=device-width,initial-scale=1",
+    },
+    { title: "Ruairí's Site" },
+  ];
 };
 
 export const links: LinksFunction = () => {
@@ -39,6 +51,7 @@ export default function App() {
 
   useEffect(() => {
     if (gaTrackingId?.length) {
+      console.log(location.pathname, gaTrackingId)
       gtag.pageview(location.pathname, gaTrackingId);
     }
   }, [location, gaTrackingId]);
@@ -47,31 +60,30 @@ export default function App() {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="font-mono">
-      <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-            />
-            <script
-              async
-              id="gtag-init"
-              dangerouslySetInnerHTML={{
-                __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
+      <body className="font-mono" suppressHydrationWarning={true}>
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+        />
+        <script
+          async
+          id="gtag-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-                gtag('config', '${gaTrackingId}', {
-                  page_path: window.location.pathname,
-                });
-              `,
-              }}
-            />
-
+            gtag('config', '${gaTrackingId}', {
+              page_path: window.location.pathname,
+            });
+          `,
+          }}
+        />
+        <Header />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

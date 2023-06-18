@@ -4,14 +4,14 @@ import { Link, useLoaderData } from "@remix-run/react";
 
 import type { Post } from "~/post";
 import { getPosts } from "~/post";
-export const meta: V2_MetaFunction = () => [{ title: "Ruairí's Site" }];
+export const meta: V2_MetaFunction = () => [{ title: "Blog Posts | Ruairí's Site" }];
 
 export const loader = async () => {
   return getPosts();
 };
 
 
-export default function Index() {
+export default function Posts() {
   let posts = useLoaderData<Post[]>();
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
