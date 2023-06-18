@@ -9,7 +9,7 @@ function Header() {
         </Link>
         <div className="contact">
           <p>Contact me:</p>
-          <a href="https://mastodon.online/@ruarfff" className="underline">https://mastodon.online/@ruarfff</a>
+          <a rel="me" href="https://mastodon.online/@ruarfff" className="underline">https://mastodon.online/@ruarfff</a>
         </div>
       </div>
     </header>
