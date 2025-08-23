@@ -1,6 +1,6 @@
-import { V2_MetaFunction } from "@remix-run/node";
+import { MetaFunction } from "react-router";
 
-export const meta: V2_MetaFunction = () => [{ title: "About | Ruairí's Site" }];
+export const meta: MetaFunction = () => [{ title: "About | Ruairí's Site" }];
 
 export default function About() {
   return (

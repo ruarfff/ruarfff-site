@@ -4,11 +4,13 @@ node_modules
 /build
 /public/build
 /.env
+/.react-router
 # Local Netlify folder
 .netlify
-
 
 /app/styles/tailwind.css
 
 /.vscode
 .vscode/launch.json
+
+*.tsbuildinfo

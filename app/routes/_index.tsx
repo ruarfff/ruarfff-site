@@ -1,10 +1,10 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "react-router";
 
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 
 import type { Post } from "~/post";
 import { getPosts } from "~/post";
-export const meta: V2_MetaFunction = () => [{ title: "Ruairí's Site" }];
+export const meta: MetaFunction = () => [{ title: "Ruairí's Site" }];
 
 export const loader = async () => {
   return getPosts();

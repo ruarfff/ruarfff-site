@@ -1,5 +1,5 @@
-import { createRequestHandler } from "@remix-run/netlify";
-import * as build from "@remix-run/dev/server-build";
+import { createRequestHandler } from "@react-router/node";
+import * as build from "virtual:react-router/server-build";
 
 export const handler = createRequestHandler({
   build,

@@ -1,27 +1,25 @@
-import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "react-router";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLoaderData,
   useLocation,
-} from "@remix-run/react";
+} from "react-router";
 import { useEffect } from "react";
 import * as gtag from "~/utils/gtags.client";
 import Header from "./header/header";
-import appStylesheetUrl from "./styles/app.css";
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import appStylesheetUrl from "./styles/app.css?url";
+import tailwindStylesheetUrl from "./styles/tailwind.css?url";
 
 export const loader = async () => {
-  return json({ gaTrackingId: "G-J8S0YBL54N" });
+  return { gaTrackingId: "G-J8S0YBL54N" };
 };
 
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     {
       name: "viewport",
@@ -86,7 +84,6 @@ export default function App() {
         <Outlet />
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
