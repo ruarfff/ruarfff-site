@@ -11,8 +11,8 @@ import {
 } from "react-router";
 import * as gtag from "~/utils/gtags.client";
 import Header from "./header/header";
-import appStylesheetUrl from "./styles/app.css";
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import "./styles/app.css";
+import "./styles/tailwind.css";
 
 export const loader = async () => {
   return { gaTrackingId: "G-J8S0YBL54N" };
