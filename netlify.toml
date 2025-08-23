@@ -1,6 +1,6 @@
 [build]
-command = "npm run build && cp _app_redirects public/_redirects"
-publish = "public"
+command = "npm run build && cp _app_redirects build/client/_redirects"
+publish = "build/client"
 
 [functions]
 included_files = ["posts/**"]
