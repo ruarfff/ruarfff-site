@@ -1,10 +1,8 @@
 export default {
-  darkMode: 'class', // This enables dark
+  darkMode: "class", // This enables dark
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {
-
-    },
+    extend: {},
   },
   plugins: [require("@tailwindcss/typography")],
 };

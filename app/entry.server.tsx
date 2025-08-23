@@ -1,8 +1,8 @@
 import { PassThrough } from "node:stream";
-import type { EntryContext } from "react-router";
-import { ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
+import type { EntryContext } from "react-router";
+import { ServerRouter } from "react-router";
 
 const ABORT_DELAY = 5_000;
 
@@ -34,11 +34,9 @@ function handleBotRequest(
   routerContext: EntryContext
 ) {
   return new Promise((resolve, reject) => {
+    let currentStatusCode = responseStatusCode;
     const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter
-        context={routerContext}
-        url={request.url}
-      />,
+      <ServerRouter context={routerContext} url={request.url} />,
       {
         onAllReady() {
           const body = new PassThrough();
@@ -46,9 +44,9 @@ function handleBotRequest(
           responseHeaders.set("Content-Type", "text/html");
 
           resolve(
-            new Response(body as any, {
+            new Response(body as BodyInit, {
               headers: responseHeaders,
-              status: responseStatusCode,
+              status: currentStatusCode,
             })
           );
 
@@ -58,7 +56,7 @@ function handleBotRequest(
           reject(error);
         },
         onError(error: unknown) {
-          responseStatusCode = 500;
+          currentStatusCode = 500;
           console.error(error);
         },
       }
@@ -75,11 +73,9 @@ function handleBrowserRequest(
   routerContext: EntryContext
 ) {
   return new Promise((resolve, reject) => {
+    let currentStatusCode = responseStatusCode;
     const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter
-        context={routerContext}
-        url={request.url}
-      />,
+      <ServerRouter context={routerContext} url={request.url} />,
       {
         onShellReady() {
           const body = new PassThrough();
@@ -87,9 +83,9 @@ function handleBrowserRequest(
           responseHeaders.set("Content-Type", "text/html");
 
           resolve(
-            new Response(body as any, {
+            new Response(body as BodyInit, {
               headers: responseHeaders,
-              status: responseStatusCode,
+              status: currentStatusCode,
             })
           );
 
@@ -100,7 +96,7 @@ function handleBrowserRequest(
         },
         onError(error: unknown) {
           console.error(error);
-          responseStatusCode = 500;
+          currentStatusCode = 500;
         },
       }
     );

@@ -1,4 +1,4 @@
-import { MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => [{ title: "About | Ruairí's Site" }];
 

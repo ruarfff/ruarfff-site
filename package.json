@@ -7,19 +7,15 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
-    "format": "prettier --write .",
-    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
     "start": "react-router-serve ./build/server/index.js",
     "test": "vitest",
     "typecheck": "react-router typegen && tsc -b"
   },
-  "prettier": {},
-  "eslintIgnore": [
-    "/node_modules",
-    "/build",
-    "/public/build",
-    "/posts"
-  ],
   "dependencies": {
     "@netlify/functions": "^2.8.1",
     "@react-router/node": "^7.8.0",
@@ -36,6 +32,7 @@
     "tiny-invariant": "^1.3.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.2.2",
     "@faker-js/faker": "^9.0.3",
     "@netlify/vite-plugin-react-router": "^1.0.1",
     "@react-router/dev": "^7.8.0",
@@ -50,12 +47,8 @@
     "@vitejs/plugin-react": "^4.3.2",
     "@vitest/coverage-v8": "^2.1.2",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.12.0",
-    "eslint-config-prettier": "^9.1.0",
     "happy-dom": "^15.7.4",
     "postcss": "^8.4.47",
-    "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
     "vite": "^5.4.8",

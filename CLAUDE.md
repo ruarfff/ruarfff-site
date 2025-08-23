@@ -7,9 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Development server**: `npm run dev` - Starts React Router v7 dev server (localhost:5173)
 - **Build**: `npm run build` - Builds production bundle for Netlify deployment
 - **Test**: `npm test` - Runs Vitest test suite
-- **Lint**: `npm run lint` - Runs ESLint with caching
+- **Lint**: `npm run lint` - Runs Biome linting
+- **Lint fix**: `npm run lint:fix` - Runs Biome linting with auto-fixes
+- **Check**: `npm run check` - Runs Biome linting and formatting checks
+- **Check fix**: `npm run check:fix` - Runs Biome with auto-fixes for linting and formatting
+- **Format**: `npm run format` - Formats code with Biome
 - **Type check**: `npm run typecheck` - Generates React Router types and runs TypeScript checks
-- **Format**: `npm run format` - Formats code with Prettier
 
 ## Architecture Overview
 
@@ -56,16 +59,19 @@ This is a React Router v7 personal blog deployed on Netlify (migrated from Remix
 - **CSS Framework**: Tailwind CSS with custom app.css
 - **Typography**: @tailwindcss/typography plugin for blog content  
 - **Fonts**: Poppins font family from Google Fonts
-- **CSS Import**: CSS files imported with `?url` query for React Router v7
+- **CSS Import**: CSS files imported directly (React Router v7 inlines critical CSS automatically)
 
 ## Migration Notes
 
-Recently migrated from Remix to React Router v7:
+Recently migrated from Remix to React Router v7 and ESLint/Prettier to Biome:
 - All `@remix-run/*` imports replaced with `react-router`
 - `V2_MetaFunction` → `MetaFunction`
 - `json()` wrapper removed from loaders (direct returns)
 - Entry files updated to use `ServerRouter` and `HydratedRouter`
 - TypeScript module resolution set to `bundler`
+- Replaced ESLint + Prettier with Biome for linting and formatting
+- Node.js imports use `node:` protocol (e.g., `node:fs/promises`)
+- Template literals preferred over string concatenation
 
 ## Environment Requirements
 

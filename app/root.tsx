@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { LinksFunction, MetaFunction } from "react-router";
 import {
   Links,
@@ -8,16 +9,14 @@ import {
   useLoaderData,
   useLocation,
 } from "react-router";
-import { useEffect } from "react";
 import * as gtag from "~/utils/gtags.client";
 import Header from "./header/header";
-import appStylesheetUrl from "./styles/app.css?url";
-import tailwindStylesheetUrl from "./styles/tailwind.css?url";
+import appStylesheetUrl from "./styles/app.css";
+import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 export const loader = async () => {
   return { gaTrackingId: "G-J8S0YBL54N" };
 };
-
 
 export const meta: MetaFunction = () => {
   return [
@@ -43,7 +42,6 @@ export const links: LinksFunction = () => {
 };
 
 export default function App() {
-
   const location = useLocation();
   const { gaTrackingId } = useLoaderData<typeof loader>();
 

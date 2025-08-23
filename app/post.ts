@@ -1,6 +1,6 @@
+import fs from "node:fs/promises";
+import path from "node:path";
 import parseFrontMatter from "front-matter";
-import fs from "fs/promises";
-import path from "path";
 import invariant from "tiny-invariant";
 
 export type Post = {
@@ -20,9 +20,13 @@ export type PostMarkdownAttributes = {
 const postsPath = path.resolve("posts");
 
 function isValidPostAttributes(
-  attributes: any
+  attributes: unknown
 ): attributes is PostMarkdownAttributes {
-  return attributes?.title;
+  return (
+    typeof attributes === "object" &&
+    attributes !== null &&
+    "title" in attributes
+  );
 }
 
 export async function getPosts() {
@@ -39,7 +43,7 @@ export async function getPosts() {
           `${filename} has bad meta data!`
         );
         return {
-          slug:'/posts/' + filename.replace(/\.md$/, ""),
+          slug: `/posts/${filename.replace(/\.md$/, "")}`,
           title: attributes.title,
           description: attributes.description,
           date: attributes.date,

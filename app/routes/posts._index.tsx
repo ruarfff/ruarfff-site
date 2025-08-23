@@ -4,15 +4,16 @@ import { Link, useLoaderData } from "react-router";
 
 import type { Post } from "~/post";
 import { getPosts } from "~/post";
-export const meta: MetaFunction = () => [{ title: "Blog Posts | Ruairí's Site" }];
+export const meta: MetaFunction = () => [
+  { title: "Blog Posts | Ruairí's Site" },
+];
 
 export const loader = async () => {
   return getPosts();
 };
 
-
 export default function Posts() {
-  let posts = useLoaderData<Post[]>();
+  const posts = useLoaderData<Post[]>();
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-8 text-4xl">Blog Posts</h1>

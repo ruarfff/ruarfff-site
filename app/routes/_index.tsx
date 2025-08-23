@@ -10,9 +10,8 @@ export const loader = async () => {
   return getPosts();
 };
 
-
 export default function Index() {
-  let posts = useLoaderData<Post[]>();
+  const posts = useLoaderData<Post[]>();
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-8 text-4xl">Blog Posts</h1>

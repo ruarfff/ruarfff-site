@@ -1,27 +1,23 @@
+import ReactMarkdown from "react-markdown";
 import type { LoaderFunction, MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
-import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
 import { getPost } from "~/post";
 
-
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.slug, "expected params.slug");
   return getPost(params.slug);
 };
 
-export const meta: MetaFunction<typeof loader> = ({
-  data,
-}) => {
-  return [{ title: data?.title + "| Ruairí's Site" }];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `${data?.title}| Ruairí's Site` }];
 };
 
 export default function PostSlug() {
   const post = useLoaderData();
-
 
   return (
     <div className={`min-h-screen flex flex-col`}>
@@ -30,32 +26,32 @@ export default function PostSlug() {
           <h1 className="text-3xl font-semibold mb-4">{post.title}</h1>
           <p className="mb-4">{post.date}</p>
 
-          <ReactMarkdown remarkPlugins={[gfm]} className="prose dark:prose-dark max-w-none"
-          components={{
-            code({ className, children, ...props }: any) {
-              const match = /language-(\w+)/.exec(className || "");
-              return match ? (
-                <SyntaxHighlighter
-                  children={String(children).replace(/\n$/, "")}
-                  style={tomorrow}
-                  language={match[1]}
-                  PreTag="div"
-                />
-              ) : (
-                <code {...props} className={(className || "") + " not-prose"}>
-                  {children}
-                </code>
-              );
-            },
-          }}>
+          <ReactMarkdown
+            remarkPlugins={[gfm]}
+            className="prose dark:prose-dark max-w-none"
+            components={{
+              code({ className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || "");
+                return match ? (
+                  <SyntaxHighlighter
+                    style={tomorrow}
+                    language={match[1]}
+                    PreTag="div"
+                  >
+                    {String(children).replace(/\n$/, "")}
+                  </SyntaxHighlighter>
+                ) : (
+                  <code {...props} className={`${className || ""} not-prose`}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          >
             {post.markdown}
           </ReactMarkdown>
-
-
         </article>
       </main>
-
     </div>
   );
-
 }

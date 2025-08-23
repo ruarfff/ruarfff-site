@@ -1,10 +1,5 @@
-import {
-    Outlet
-} from "react-router";
-
-
+import { Outlet } from "react-router";
 
 export default function Posts() {
-
-  return (<Outlet />);
+  return <Outlet />;
 }
