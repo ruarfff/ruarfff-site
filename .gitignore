@@ -14,3 +14,5 @@ node_modules
 .vscode/launch.json
 
 *.tsbuildinfo
+
+.claude/settings.Local.json
