@@ -14,7 +14,7 @@ It started with GitHub copilot and fancy autocomplete. Then web chat interfaces,
 
 Agents are a useful tool because you can give them work that you would otherwise have to do yourself and they'll just go and try to do it, with varying degrees of success. Using techniques I discuss here, I try to increase the frequency of success.
 
-Using the term "agents" in this context, I'm thinking about instances of a coding agent, i.e. one context window. A single LLM thread, primed with some context and with access to a set of tools.
+Using the term "agents" in this context, I'm thinking about instances of a coding agent in one context window. A single LLM thread, primed with some context and with access to a set of tools.
 
 Agents are limited by their context window so you can only do so much before they start to go a bit crazy. Most LLMs are currently [Autoregressive](https://en.wikipedia.org/wiki/Autoregressive_model) so performance varies depending on what's in the context at the time. At least for now, it makes sense to optimize running many small agent sessions over one long one and therefore crafting a workflow that is good for that.
 
@@ -58,13 +58,13 @@ Setup jj in the repo:
 
 `jj git init --colocate`
 
-Create a github repo for the project using the [GitHub CLI](https://cli.github.com/):
+Create a GitHub repo for the project using the [GitHub CLI](https://cli.github.com/):
 
 ```shell
 gh repo create Nathaniel --public --source=. --remote=origin
 ```
 
-Something you'll see me do over an over is something I do right now after setting the repo up:
+Then commit the gitignore:
 
 ```shell
 # Describe the working change, like git commit:
@@ -73,18 +73,18 @@ jj describe -m "Add gitignore"
 # Put all changes on main:
 jj bookmark set main -r @
 
-#Push changes to the github repo:
+# Push changes to the GitHub repo:
 jj git push
 
 # Or if creating a new branch which I needed to do first time here:
 jj git push --allow-new
 ```
 
-I just do this 3 step process all the time. There might be some easier way but this is the habit I've formed.
+I do this 3 step, describe, bookmark, push process all the time. There might be some easier way but this is the habit I've formed.
 
 At this point, there are 2 commits. The initial commit from XCode and the gitignore commit.
 
-Now those commits are up on github [here](https://github.com/ruarfff/Nathaniel/commit/a0c16ea5d85009b3897c23cdd8933416a5e42735)  and [here](https://github.com/ruarfff/Nathaniel/commit/a0c16ea5d85009b3897c23cdd8933416a5e42735).
+Now those commits are up on GitHub [here](https://github.com/ruarfff/Nathaniel/commit/a0c16ea5d85009b3897c23cdd8933416a5e42735)  and [here](https://github.com/ruarfff/Nathaniel/commit/a0c16ea5d85009b3897c23cdd8933416a5e42735).
 
 Then I took my old Windows Phone app code and put it into a directory called `Legacy`.
 
@@ -108,7 +108,7 @@ Hopefully that gives you an idea of the code we're working with. Now it's time t
 
 There is a tool called beads <https://github.com/steveyegge/beads> that is an interesting concept for managing agent work. Agents can use it to create and track issues. It has a graph structure to help an agent navigate historical tasks without loading everything into context unnecessarily.
 
-There are other similar tools like [github's spec-kit](https://github.com/github/spec-kit) that track things in yaml files and provide tools to help agents manage work with scripts, custom commands etc. There will likely be many more options over time but right now, beads is the one I find most intuitive and with the lowest cognitive load.
+There are other similar tools like [GitHub's spec-kit](https://github.com/github/spec-kit) that track things in yaml files and provide tools to help agents manage work with scripts, custom commands etc. There will likely be many more options over time but right now, beads is the one I find most intuitive and with the lowest cognitive load.
 
 The [beads repo](https://github.com/steveyegge/beads) has a good setup guide but here's what I did:
 
@@ -162,10 +162,10 @@ Read instructions from AGENTS.md:
 
 Next I asked claude to run `bd onboard` (I ran `claude` and said "please run `bd onboard`")
 
-This updated the AGENTS.md file. It also create a copilot instructions file which I decided to delete.
+This updated the AGENTS.md file. It also created a copilot instructions file which I decided to delete.
 
 ```shell
-jj describe -m "Add AGENTS.md and run bd oboard."
+jj describe -m "Add AGENTS.md and run bd onboard."
 jj bookmark set main -r @
 jj git push
 ```
@@ -407,7 +407,7 @@ Being out for a walk, chatting to the agent having it open PRs for you is quite 
 
 It feels to me there's just an infinite amount of work to do and even with little agents busy doing a bunch of it, there will always be more to do. I currently find the setup described here nice to work with to get a little more done.
 
-I don't know what the future holds. It feels like progress is good and good should come out of this. Sometimes it feels like everything is being driven by psychotic ultra capitalist tech bros though. Salivating at having us all live in poverty while AI does every job and just pours money into their pockets to buy bigger yachts or something. Maybe that's where we're headed but I don't want to believe that.
+I don't know what the future holds. It feels like progress should be good. Sometimes it feels like everything is being driven by psychotic ultra capitalist tech bros though. Salivating at having us all live in poverty while AI does every job and just pours money into their pockets to buy bigger yachts or something. Maybe that's where we're headed but I don't want to believe that.
 
 I find coding agents really useful. I feel optimistic. I was able to revive my old college game, something I'd probably never have bothered with otherwise and I have so many other things I'm looking forward to trying. Hopefully this post gave you some ideas too. Good luck out there.
 
