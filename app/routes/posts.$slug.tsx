@@ -30,7 +30,7 @@ export default function PostSlug() {
 
           <ReactMarkdown
             remarkPlugins={[gfm]}
-            className="prose dark:prose-dark max-w-none"
+            className="prose prose-lg md:prose-xl dark:prose-invert max-w-none"
             components={{
               img: ({ src, alt, ...props }) => {
                 let transformedSrc = src;

@@ -26,11 +26,13 @@ export default function Index() {
               <div>
                 <Link
                   to={post.slug}
-                  className="text-lg md:text-2xl font-semibold no-underline hover:underline"
+                  className="text-xl md:text-2xl font-semibold no-underline hover:underline"
                 >
                   {post.title}
                 </Link>
-                <p className="mt-2">{post.description}</p>
+                <p className="mt-2 text-base text-gray-600">
+                  {post.description}
+                </p>
                 <span className="mt-2 block text-sm text-gray-500 md:hidden">
                   {post.date}
                 </span>

@@ -36,6 +36,7 @@
     "@biomejs/biome": "^2.2.2",
     "@faker-js/faker": "^9.0.3",
     "@netlify/vite-plugin-react-router": "^1.0.1",
+    "@playwright/test": "^1.57.0",
     "@react-router/dev": "^7.8.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.5.0",
