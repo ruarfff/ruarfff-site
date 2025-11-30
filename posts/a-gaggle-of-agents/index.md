@@ -88,7 +88,7 @@ Now those commits are up on GitHub [here](https://github.com/ruarfff/Nathaniel/c
 
 Then I took my old Windows Phone app code and put it into a directory called `Legacy`.
 
-I did hit an warning trying to commit that using jj. Some game assets are large so I needed to configure max size:
+I hit a warning trying to commit that using jj. Some game assets are large so I needed to configure max size:
 
 `jj config set --repo snapshot.max-new-file-size 2049292`
 
@@ -237,7 +237,7 @@ The plan agent (Shift + Tab twice) is pretty cool. It's an example of a custom a
 
 Custom agents have some nice features, like their own context window and the ability to prime them with instructions that you can run repeatedly. You can also curate the tools they have access to.
 
-A fair comment might be that custom agents are almost alway overkill and that's probably true but I found two use cases I liked for this project.
+A fair comment might be that custom agents are almost always overkill and that's probably true but I found two use cases I liked for this project.
 
 There's the review agent, [literally the example in the docs](https://code.claude.com/docs/en/sub-agents#example-subagents), so I won't go into detail on that.
 
@@ -405,9 +405,9 @@ Being out for a walk, chatting to the agent having it open PRs for you is quite 
 
 ## Conclusion
 
-It feels to me there's just an infinite amount of work to do and even with little agents busy doing a bunch of it, there will always be more to do. I currently find the setup described here nice to work with to get a little more done.
+It feels to me there's just an infinite amount of work to do and even with busy little agents doing a bunch of it, there will always be more to do. I currently find the setup described here nice for getting a little more done in an enjoyable way.
 
-I don't know what the future holds. It feels like progress should be good. Sometimes it feels like everything is being driven by psychotic ultra capitalist tech bros though. Salivating at having us all live in poverty while AI does every job and just pours money into their pockets to buy bigger yachts or something. Maybe that's where we're headed but I don't want to believe that.
+I don't know what the future holds. It feels like Star Trek, talking to "Computer" to get things done. Progress should be good for everyone, but sometimes it feels like everything is being driven by psychotic ultra capitalist tech bros salivating at having us all live in poverty while AI does every job and just pours money into their pockets, to buy bigger yachts, bunkers or whatever. Maybe that's where we're headed but I don't want to believe that.
 
 I find coding agents really useful. I feel optimistic. I was able to revive my old college game, something I'd probably never have bothered with otherwise and I have so many other things I'm looking forward to trying. Hopefully this post gave you some ideas too. Good luck out there.
 
