@@ -4,9 +4,9 @@ date: "2025-11-29"
 description: Lessons from trying to get stuff done with coding agents.
 ---
 
-I am trying to understand how to leverage coding agents but I am a simple person and want to keep it simple. I don't care about the hype around AI coding and I find most of the discourse around it annoying.
+There's a lot of hype around coding agents and the discourse can be annoying.
 
-I've always been into new shiny tools though. I'm forever messing around with editors, IDEs, CLIs etc. I've wasted massive amounts of time playing around with tools that don't exist anymore.
+I've always been into new shiny tools though. I'm forever messing with editors, IDEs, CLIs and anything else that seemed useful. Many of which no longer exist.
 
 In college we learned to code in assembly. C seemed very simple by comparison. Then object oriented languages and scripting seemed quaint. IDEs with refactoring and autocomplete made coding much easier. Tools like React and the ability to install npm packages made hacking a UI together somewhat less miserable and then before long somehow much more miserable. I had to take time to learn each new thing before it became useful but I enjoyed the learning. Now it's LLMs and agents. They're different but it's a similar feeling.
 
