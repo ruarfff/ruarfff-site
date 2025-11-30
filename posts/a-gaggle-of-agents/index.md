@@ -211,7 +211,7 @@ At this point, Claude created a plan but I wasn't paying attention and it went o
 
 It ran through some of the changes and they did not work. I decided to commit anyway since the plan is in there:
 
-```
+```shell
 jj describe -m "Add plan and initial content pipeline"
 jj bookmark set main -r @
 jj git push
