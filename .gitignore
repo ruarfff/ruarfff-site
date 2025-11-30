@@ -16,3 +16,7 @@ node_modules
 *.tsbuildinfo
 
 .claude/settings.Local.json
+
+.playwright-mcp/
+playwright-report/
+test-results/
