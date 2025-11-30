@@ -24,7 +24,11 @@ export default defineConfig({
         {
           src: "posts/*/*.{png,jpg,jpeg,gif,svg,webp}",
           dest: "images",
-          rename: (fileName: string, fileExtension: string, fullPath: string) => {
+          rename: (
+            fileName: string,
+            fileExtension: string,
+            fullPath: string
+          ) => {
             const match = fullPath.match(/posts\/([^/]+)\//);
             const slug = match ? match[1] : "";
             return `${slug}/${fileName}.${fileExtension}`;
