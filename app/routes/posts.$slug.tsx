@@ -5,7 +5,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
-import { getPost } from "~/post";
+import { type Post, getPost } from "~/post";
 
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.slug, "expected params.slug");
@@ -17,7 +17,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 };
 
 export default function PostSlug() {
-  const post = useLoaderData();
+  const post = useLoaderData<Post>();
 
   return (
     <div className={`min-h-screen flex flex-col`}>
@@ -30,6 +30,13 @@ export default function PostSlug() {
             remarkPlugins={[gfm]}
             className="prose dark:prose-dark max-w-none"
             components={{
+              img: ({ src, alt, ...props }) => {
+                let transformedSrc = src;
+                if (src && !src.startsWith("/") && !src.startsWith("http")) {
+                  transformedSrc = `/images/${post.slug}/${src}`;
+                }
+                return <img src={transformedSrc} alt={alt} {...props} />;
+              },
               code({ className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || "");
                 return match ? (

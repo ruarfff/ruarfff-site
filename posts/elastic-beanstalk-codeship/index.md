@@ -52,33 +52,33 @@ If it's not your first time creating one, click the create new app link anyway t
 
 You will see a dialog prompting you to enter application details. Enter whatever you want there.
 
-![my-test-app](/images/elastic-beanstalk-codeship/01-my-test-app.png)
+![my-test-app](01-my-test-app.png)
 
 You will end up at the screen listing any application you have created.
 
-![appllications-view-create-one](/images/elastic-beanstalk-codeship/02-appllications-view-create-one.png)
+![appllications-view-create-one](02-appllications-view-create-one.png)
 
 Select the option to create a new environment for your application, either in the Actions dropdown or by clicking the `Create one now` link.
 
 Choose the Web Server option.
 
-![choose-env](/images/elastic-beanstalk-codeship/03-choose-env.png)
+![choose-env](03-choose-env.png)
 
 Fill in the form.
 
 For this example we will use the Node.js pre-configured platform. You can use the Sample application option for Application code. We will overwrite that soon.
 
-![new-env-form](/images/elastic-beanstalk-codeship/04-new-env-form.png)
+![new-env-form](04-new-env-form.png)
 
 Click the Create button and wait for you environment to be created.
 
-![env-creating](/images/elastic-beanstalk-codeship/05-env-creating.png)
+![env-creating](05-env-creating.png)
 
 This will take a while to complete.
 
 AWS provides you with a public URL (as you saw in the create env form) so once your environment is up an running you can access it in the browser. In my case I saw this.
 
-![sample-app](/images/elastic-beanstalk-codeship/06-sample-app.png)
+![sample-app](06-sample-app.png)
 
 If you go back to the EB view you can see the application health and there's even a button to upload new code to EB. If you didn't want a deployment pipeline you could just use that button.
 
@@ -88,11 +88,11 @@ Just to go over how to add and use another service in EB, we will add a MySQL da
 
 Go to the configuration tab for you application.
 
-![eb-config-tab](/images/elastic-beanstalk-codeship/07-eb-config-tab.png)
+![eb-config-tab](07-eb-config-tab.png)
 
 Scroll down for the database card and click `Modify`. You will be presented with a form to create a new database. You can fill in the form similarly to how I have below. I have chosen the cheapest options as I will be deleting all this soon after.
 
-![db-config](/images/elastic-beanstalk-codeship/08-db-config.png)
+![db-config](08-db-config.png)
 
 Once you click Save, be sure to click Apply on the next screen.
 
@@ -133,11 +133,11 @@ In this section we will:
 
 Go to the [IAM](https://console.aws.amazon.com/iam/home) service in your AWS console. Click on the `Policies` link on the left.
 
-![policies-page](/images/elastic-beanstalk-codeship/09-policies-page.png)
+![policies-page](09-policies-page.png)
 
 Click the `Create Policy` button. Select the JSON tab like below.
 
-![iam-policy](/images/elastic-beanstalk-codeship/10-iam-policy.png)
+![iam-policy](10-iam-policy.png)
 
 Insert the following JSON, replacing my region and account ID with yours.
 
@@ -200,7 +200,7 @@ Insert the following JSON, replacing my region and account ID with yours.
 
 Click review policy and fill out the next form. Fill in detail that make sense to you and will make it easy to find the policy later.
 
-![eb-iam-review](/images/elastic-beanstalk-codeship/11-eb-iam-review.png)
+![eb-iam-review](11-eb-iam-review.png)
 
 ### Create a deployment user
 
@@ -208,7 +208,7 @@ In the IAM console, click the Users link on the left menu and click the Add user
 
 Create a user to use in your CI system (I am calling mine codeship-deployer since I am using CodeShip). Select the Programmatic access option.
 
-![new-user](/images/elastic-beanstalk-codeship/12-new-user.png)
+![new-user](12-new-user.png)
 
 ### Create a deployment user group
 
@@ -220,11 +220,11 @@ Give the group a sensible name. I just called mine Deployment.
 
 In the user group menu, select the Permissions tab and click Attach Policy.
 
-![attach-policy](/images/elastic-beanstalk-codeship/13-attach-policy.png)
+![attach-policy](13-attach-policy.png)
 
 Find the policies we created earlier and attach them.
 
-![policies-to-add](/images/elastic-beanstalk-codeship/14-policies-to-add.png)
+![policies-to-add](14-policies-to-add.png)
 
 ### Access Keys
 
@@ -232,17 +232,17 @@ Before we go on to the next step, you will need to get access keys for the user 
 
 Click on `Create Access Key`. You will be shown an Access key ID and Secret access key. Keep this for the next step where we will configure our pipeline and will have to provide these keys.
 
-![keys](/images/elastic-beanstalk-codeship/15-keys.png)
+![keys](15-keys.png)
 
 ## 3. Configure a deployment pipeline with CodeShip
 
 I will be using CodeShip specifically here but I guess the instructions would be reasonably similar for other tools too. I am going to assume you have a project setup and all you have left to do is configure a deployment. Select the deploy option in project settings and select Amazon ELastic Beanstalk.
 
-![cs-deploy](/images/elastic-beanstalk-codeship/16-cs-deploy.png)
+![cs-deploy](16-cs-deploy.png)
 
 You will be shown a form to fill in. If you have followed along so far you should have all the values you need for this ready to go. Fill in the form similar to what I have here.
 
-![cs-eb-fill-in](/images/elastic-beanstalk-codeship/17-cs-eb-fill-in.png)
+![cs-eb-fill-in](17-cs-eb-fill-in.png)
 
 The `AWS Access Key ID` and `AWS Secret Access Key` are the keys we generated for the deployment user. The `Region` is whatever region you created your EB stuff in. The `Application` is the name of the EB application we created. The `Environment` is the name of the environment we created for the application. The `S3 Bucket` is the name of the bucket being used by EB to store application resources.
 
@@ -252,7 +252,7 @@ Now you can run your deployment pipeline. You probably need to push something to
 
 The first time I ran my pipeline I go this.
 
-![gotcha](/images/elastic-beanstalk-codeship/18-gotcha.png)
+![gotcha](18-gotcha.png)
 
 To fix it I went in to the deployment menu in my EB app, removed the sample app and deployed the new app that Codeship had put there. The pipeline worked from then on. I presume I missed some step somewhere or perhaps I should have uploaded the app I was going to deploy in the earlier steps instead of selecting the Sample App.
 
@@ -268,7 +268,7 @@ Hit the URL to make sure the app is running.
 
 You can go in and check out application logs.
 
-![env](/images/elastic-beanstalk-codeship/19-env.png)
+![env](19-env.png)
 
 If I hit issues deploying my app, I usually add a bunch of logging for things like the database connection or any other environment specific stuff and can check what is being picked up in those logs. Haven't come up with a better way than that yet.
 

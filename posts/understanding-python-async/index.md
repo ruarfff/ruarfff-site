@@ -195,7 +195,7 @@ Run it:
 make async-example
 ```
 
-![Async example](/images/understanding-python-async/async1.png)
+![Async example](async1.png)
 
 This contrived example shows a simple case where asynchronous code got things done faster than blocking code.
 
@@ -248,7 +248,7 @@ if __name__ == "__main__":
     main()
 ```
 
-![GIL Output](/images/understanding-python-async/gil.png)
+![GIL Output](gil.png)
 
 If multiple threads are updating references, you might get an accidental garbage collection or a memory leak. The lock is there to ensure this doesn't happen and garbage collection is done safely.
 
@@ -341,7 +341,7 @@ You should see output similar to the following:
 ```
 
 In the application logs:
-![Async example output](/images/understanding-python-async/async-normal.png)
+![Async example output](async-normal.png)
 
 That was perhaps too fast to prove anything.
 
@@ -361,7 +361,7 @@ async def root():
 
 Run the test again:
 
-![Async example with ait output](/images/understanding-python-async/async-normal-waiting.png)
+![Async example with ait output](async-normal-waiting.png)
 
 Despite each call not responding for 4 seconds, they all kicked off at the same time. FastAPI is handling requests asynchronously.
 
@@ -398,7 +398,7 @@ Update the curl command to allow 6 concurrent requests:
 
 `curl --parallel --parallel-immediate --parallel-max 6 --config curl_configs/test_urls_slow.txt`
 
-![Async with blocking example output](/images/understanding-python-async/slow.png)
+![Async with blocking example output](slow.png)
 
 Oops! We just blocked all requests from being processed.
 
@@ -433,7 +433,7 @@ url = "http://127.0.0.1:8000/"
 `curl --parallel --parallel-immediate --parallel-max 6 --config curl_configs/test_urls_sync_slow.txt`
 ```
 
-![Async with example output](/images/understanding-python-async/sync-slow.png)
+![Async with example output](sync-slow.png)
 
 If you don't specify your endpoint as being async i.e. as [a coroutine](https://docs.python.org/3/library/asyncio-task.html), FastAPI will look after it for you instead as it will assume this route contains blocking calls whereas if you specify `async`, it's up to you to make sure it really is asynchronous.
 
@@ -607,7 +607,7 @@ Run 5 blocking
 ```
 
 You should see output int he app console like this:
-![Pubsub output](/images/understanding-python-async/pubsub_output.png)
+![Pubsub output](pubsub_output.png)
 
 All the messages were processed asynchronously. The pubsub is using a callback and the eventloop used by FastAPI is not effected.
 

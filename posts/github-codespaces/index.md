@@ -14,15 +14,15 @@ If you don't have access to Codespaces you can [request early access](https://gi
 
 If you have access, you should see an option in the GitHub UI:
 
-![Repo UI](/images/github-codespaces/1-gh-repo-ui.png)
+![Repo UI](1-gh-repo-ui.png)
 
 If you have not setup this repo before, you will be asked to create a new Codespace. After that, you will have a link to the space like this:
 
-![Codespaces Button](/images/github-codespaces/2-gh-codespaces-button.png)
+![Codespaces Button](2-gh-codespaces-button.png)
 
 Then you basically have VSCode in the browser:
 
-![Codespaces UI](/images/github-codespaces/3-gh-codespaces-ui.png)
+![Codespaces UI](3-gh-codespaces-ui.png)
 
 You don't need any extra setup for this to work. You will get a handy development environment that persists so you can open it up on any machine with a browser without needing to install any extra development tools. You can work on one machine and move to another no problem.
 
@@ -74,7 +74,7 @@ I want to use [pipenv](https://pypi.org/project/pipenv/) so having this run post
 
 With all that setup, once you create a new Codespace, you should see it getting created like this:
 
-![Codespaces build output](/images/github-codespaces/4-gh-output.png)
+![Codespaces build output](4-gh-output.png)
 
 Now you have an environment setup the way you want.
 

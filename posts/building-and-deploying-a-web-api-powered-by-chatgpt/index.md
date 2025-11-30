@@ -53,7 +53,7 @@ We'll also end up using [Python](https://www.python.org/), [Docker](https://www.
 
 Unfortunately, this full setup requires and lot of signing up for stuff and getting API Keys.
 
-![Auth meme](/images/building-and-deploying-a-web-api-powered-by-chatgpt/auth-meme.jpeg)
+![Auth meme](auth-meme.jpeg)
 
 I hope you'll bear with me.
 
@@ -705,7 +705,7 @@ Now you can serve that directory e.g. using the [Live Server in VSCode](https://
 
 All going well you'll see a page like this:
 
-![UI Example](/images/building-and-deploying-a-web-api-powered-by-chatgpt/ui-example.jpeg)
+![UI Example](ui-example.jpeg)
 
 
 

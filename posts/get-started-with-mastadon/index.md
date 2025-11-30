@@ -26,7 +26,7 @@ There are many options, and this can get a bit weird because each server can hav
 
 When I set up [my account](https://mastodon.online/@ruarfff) I went with [mastodon.online](https://mastodon.online/). Another popular option is [mastodon.social](https://mastodon.social). These are owned by the Mastodon gGmbH non-profit. There are other options which you can [view here](https://joinmastodon.org/servers).
 
-![Servers](/images/get-started-with-mastadon/servers.png)
+![Servers](servers.png)
 
 The most noticeable impact of your choice at the start is this is where your account will live. Your profile URL will have the server name in it. For example, my profile URL is `https://mastodon.online/@ruarfff`because I went with `mastodon.online`.
 
@@ -38,7 +38,7 @@ Because Mastodon is a protocol, anyone can build a client for it. The client can
 
 If you are a desktop user, consider [Elk](https://elk.zone/). This gives a similar experience to Twitter if that's what you're after.
 
-![Elk](/images/get-started-with-mastadon/elk.png)
+![Elk](elk.png)
 
 You set up an account on Elk using your Mastodon profile. If you haven't already set up a Mastodon account on a server, Elk will guide you through that process.
 

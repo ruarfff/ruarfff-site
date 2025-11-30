@@ -37,34 +37,34 @@ First you need a google account. Not much point me explaining how to do that I g
 
 Then you will need to setup a GCP dashboard for yourself (if you haven't one already). Just open this link <https://console.cloud.google.com/start> and follow the instructions.
 
-![alt text](/images/kube-intro/dashboard.png "Dashboard")
+![alt text](dashboard.png "Dashboard")
 
 When on that page click the 'Create' button to create a project.
 
 When selecting a name for your project try to use something globally unique to you. For example, for me I append my username.
-![alt text](/images/kube-intro/new-project-name.png "New Project")
+![alt text](new-project-name.png "New Project")
 
 Notice it says 'Your project ID will be {the ID}' and in my case the ID matches the name I specified.
 
 Beware if you use a name that has already been used somewhere else in the world, like in this example:
-![alt text](/images/kube-intro/new-project-random-id.png "New Project Random ID")
+![alt text](new-project-random-id.png "New Project Random ID")
 
 You will get a random ID, which is a pain because whenever you need to use the ID you have to go digging for it (for some reason I keep forgetting where to find it) but the name is always visible in the UI and easier to remember.
 
 Next you will want to go the the API manager dashboard.
-![alt text](/images/kube-intro/api-manager-menu.png "API manager menu")
+![alt text](api-manager-menu.png "API manager menu")
 
 Click 'Enable API' near the top of the page.
-![alt text](/images/kube-intro/enable-api.png "Enable API")
+![alt text](enable-api.png "Enable API")
 
 Select 'Compute Engine API' (click the link under Popular APIs or search for it in the unlikely event it's not visible).
-![alt text](/images/kube-intro/select-compute-engine.png "Select compute engine")
+![alt text](select-compute-engine.png "Select compute engine")
 
 Then click the blue Enable button near the top.
-![alt text](/images/kube-intro/enable-compute-engine.png "Enable compute engine")
+![alt text](enable-compute-engine.png "Enable compute engine")
 
 At this point you will likely be asked to setup billing (unless you have already setup billing with GCP before).
-![alt text](/images/kube-intro/enable-billing.png "Enable billing")
+![alt text](enable-billing.png "Enable billing")
 
 You will be offered a free trial but you still have to enter a credit card to get it. You don't really need the free trial for what we will be doing either but no harm setting it up.
 

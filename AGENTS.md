@@ -25,6 +25,12 @@ This is a React Router v7 personal blog deployed on Netlify (migrated from Remix
 - Parsing front matter (title, date, description)
 - Generating post slugs and metadata
 
+**Blog Images**: Images are co-located with blog posts:
+- **Location**: `/posts/[slug]/image.png`
+- **Markdown reference**: `![Alt text](image.png)` (relative path)
+- **Build process**: `vite-plugin-static-copy` copies images to `/build/client/images/[slug]/`
+- **Runtime**: ReactMarkdown transforms relative paths to `/images/[slug]/image.png`
+
 **Route Structure**:
 - Explicit route configuration in `app/routes.ts`
 - Individual post routes like `angular-and-redux.tsx` map to `/posts/[slug]/index.md` files

@@ -18,7 +18,7 @@ Getting an application working and deploying it from your machine is a good star
 
 Another issue we have is we depend on the ChatGPT API, and it is slow! We will introduce another component to our system to cache ChatGPT responses. Our system will look like this.
 
-![Summer architecture Diagram](/images/getting-a-chatgpt-powered-python-api-production-ready/1-arch-diagram.png)
+![Summer architecture Diagram](1-arch-diagram.png)
 
 Getting your idea deployed and usable is only the beginning. We need tools and techniques to observe and operate our application in production. We also need ways to keep our code quality high so we're confident in deploying often.
 
@@ -40,15 +40,15 @@ Do these steps in both the UI and API. You must have followed the steps in part 
 - `cd` into the repository and run `fly tokens create deploy`.
 - Copy the output.
 - Go to the repository settings in GitHub and select 'Secrets and variable' -> 'Actions'.
-![GitHub repo settings tab](/images/getting-a-chatgpt-powered-python-api-production-ready/2-repos-settings.png)
-![GitHub repo secrets and variables menu](/images/getting-a-chatgpt-powered-python-api-production-ready/3-repo-secrets.png)
+![GitHub repo settings tab](2-repos-settings.png)
+![GitHub repo secrets and variables menu](3-repo-secrets.png)
 - Click the button 'New repository secret'
-![GitHub repo new repository secret button](/images/getting-a-chatgpt-powered-python-api-production-ready/4-new-repo-secrets-button.png)
+![GitHub repo new repository secret button](4-new-repo-secrets-button.png)
 - Call the secret `FLY_API_TOKEN` and paste the token you got from running `fly tokens create deploy`, into the Secret input.
-![GitHub repo secret input](/images/getting-a-chatgpt-powered-python-api-production-ready/5-repo-secret-input.png)
+![GitHub repo secret input](5-repo-secret-input.png)
 - Back in the repository on your local machine, create a workflow file: `mkdir -p .github/workflows/ && touch .github/workflows/fly.yml`.
 
-![Image description](/images/getting-a-chatgpt-powered-python-api-production-ready/6-workflow-file.png)
+![Image description](6-workflow-file.png)
 - Put the following content in the `.github/workflows/fly.yml` file.
 
 ```yaml
@@ -76,7 +76,7 @@ Push the changes up `git add . && git commit -m 'Add deployment workflow' && git
 Give it a few minutes and you should hopefully see the pipeline run.
 
 
-![Image description](/images/getting-a-chatgpt-powered-python-api-production-ready/7-deployment.png)
+![Image description](7-deployment.png)
 
 Now every time a push to main occurs, the latest code will deploy.
 
@@ -304,9 +304,9 @@ You should be able to load the application on <http://localhost:8080/news>.
 We exposed the redis server on port 6379 which means you can connect to it on `localhost:6379`.
 
 I used a VSCode database plugin:
-![VSCode database connection](/images/getting-a-chatgpt-powered-python-api-production-ready/8-db-plugin.png)
+![VSCode database connection](8-db-plugin.png)
 
-![Inspecting redis cache](/images/getting-a-chatgpt-powered-python-api-production-ready/9-db-record.png)
+![Inspecting redis cache](9-db-record.png)
 
 With this cache setup, our API will only hit the ChatGPT API, at most, once every 6 hours. The site will be faster, and we'll spend less money on ChatGPT calls.
 
