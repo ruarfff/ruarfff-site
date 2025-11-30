@@ -5,7 +5,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
-import { type Post, getPost } from "~/post";
+import { getPost, type Post } from "~/post";
 
 export const loader: LoaderFunction = async ({ params }) => {
   invariant(params.slug, "expected params.slug");
@@ -21,9 +21,11 @@ export default function PostSlug() {
 
   return (
     <div className={`min-h-screen flex flex-col`}>
-      <main className="flex-grow p-6">
+      <main className="flex-grow p-4 md:p-6">
         <article className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-semibold mb-4">{post.title}</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold mb-4">
+            {post.title}
+          </h1>
           <p className="mb-4">{post.date}</p>
 
           <ReactMarkdown
