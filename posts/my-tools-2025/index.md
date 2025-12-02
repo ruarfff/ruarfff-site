@@ -11,14 +11,12 @@ On Mac:
 ```shell
 brew install --cask nikitabobko/tap/aerospace
 
-# Install everything you actually need
 brew install atuin chezmoi gh fzf eza bat ripgrep starship git-delta fd tmux stern mise jj hl
 ```
 
 On Linux with apt:
 
 ```shell
-# Or on linux
 sudo apt install -y \
   fzf \
   fd-find \
@@ -50,7 +48,7 @@ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list
 sudo apt update && sudo apt install -y gh
 
-# 5. Setup chezmoi and pull your dotfiles
+# Setup chezmoi and pull your dotfiles
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply YOUR_GITHUB_USERNAME
 ```
 
@@ -71,7 +69,7 @@ brew install atuin
 echo 'eval "$(atuin init zsh)"' >> ~/.zshrc
 ```
 
-[Atuin] also comes with a pretty [cool desktop app](https://cdn.crabnebula.app/download/atuin/atuin-desktop/latest/platform/dmg-aarch64) which I love the idea of but have yet to do anything useful with
+[Atuin](https://atuin.sh) also comes with a pretty [cool desktop app](https://cdn.crabnebula.app/download/atuin/atuin-desktop/latest/platform/dmg-aarch64) which I love the idea of but have yet to do anything useful with.
 
 
 ## [Chezmoi](https://www.chezmoi.io) dotfile and config sync
