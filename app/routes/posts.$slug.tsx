@@ -1,19 +1,21 @@
 import ReactMarkdown from "react-markdown";
-import type { LoaderFunction, MetaFunction } from "react-router";
+import type { MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
 import { getPost, type Post } from "~/post";
+import type { Route } from "./+types/posts.$slug";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({ params }: Route.LoaderArgs) => {
   invariant(params.slug, "expected params.slug");
   return getPost(params.slug);
 };
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return [{ title: `${data?.title}| Ruairí's Site` }];
+export const meta: MetaFunction = ({ data }) => {
+  const post = data as Post | undefined;
+  return [{ title: `${post?.title}| Ruairí's Site` }];
 };
 
 export default function PostSlug() {

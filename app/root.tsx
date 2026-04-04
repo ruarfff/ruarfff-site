@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useEffect } from "react";
 import type { LinksFunction, MetaFunction } from "react-router";
 import {
   Links,
@@ -64,6 +64,7 @@ export default function App() {
         <script
           async
           id="gtag-init"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: required for google analytics
           dangerouslySetInnerHTML={{
             __html: `
             window.dataLayer = window.dataLayer || [];
