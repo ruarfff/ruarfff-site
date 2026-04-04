@@ -39,26 +39,24 @@ chezmoi init
 /Users/obrirua/Library/Application Support/com.mitchellh.ghostty/config
 
 ```toml
-theme = citruszest
-font-family = "MonoLisa"
-font_size = 17
+theme = Citruszest
+font-family = "Departure Mono"
+font-size = 18
 font-feature = +liga +calt 
 font-thicken = true
 
-cursor-style = block # More visible than beam 
-cursor-style-blink = false # Less distracting
+cursor-style = block
+cursor-style-blink = true
+cursor-color = "#ff00ff"
+cursor-text = "#000000"
 
-renderer = metal 
-scrollback-limit = 100000 # More history
-
-# Theme: Catppuccin Mocha (high contrast, smooth on eyes)
-palette = "catppuccin-mocha"
+scrollback-limit = 100000
 
 # Ergonomics
 window-padding-x = 12
 window-padding-y = 12
-
-keybind = cmd+k=clear
+window-height = 40
+window-width = 120
 
 ```
 
@@ -221,9 +219,13 @@ set -g status-right "%H:%M %d-%b"
 zshrc
 
 ```bash
-eval "$(atuin init zsh)"
+eval "$(atuin init zsh --disable-up-arrow)"
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
+eval "$(mise activate zsh)"
 
 
 # Plugins
@@ -242,8 +244,6 @@ setopt HIST_IGNORE_SPACE
 # General ergonomics
 setopt AUTO_CD
 setopt HIST_IGNORE_DUPS
-alias ls='ls -G'
-alias ll='ls -lhG'
 alias k='kubectl'
 alias g='git'
 alias ls="eza --icons --group-directories-first" 
@@ -253,6 +253,7 @@ alias grep="rg"
 alias ..="cd .." 
 alias ...="cd ../.." 
 alias dev="cd ~/dev"
+alias cd='z'
 
 # Optional colorized output
 autoload -U colors && colors
@@ -268,12 +269,29 @@ export FZF_DEFAULT_OPTS='
 	--layout=reverse 
 	--border 
 	--preview "bat --color=always {}" 
+  --color=bg+:#1e1e2e,bg:#11111b,spinner:#f5e0dc,hl:#f38ba8
+  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
+  --color=marker:#b4befe,fg+:#cdd6f4,prompt:#89b4fa,hl+:#f38ba8
 '
 
 # Other tools
-
 export PATH="$HOMEBREW_PREFIX/opt/make/libexec/gnubin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"
+
+function maintain() {
+    echo "--- Updating Homebrew ---"
+    brew update && brew upgrade && brew cleanup
+    
+    echo "--- macOS System Updates ---"
+    # Lists available updates; remove -i -a to just list
+    softwareupdate -i -a
+    
+    # Add other package managers here (npm, gem, pip, etc.)
+    rch "--- Other Updates ---"
+    go install github.com/steveyegge/gastown/cmd/gt@latest
+    go install github.com/steveyegge/beads/cmd/bd@latest
+    echo "--- Done ---"
+}
 
 ```
 
