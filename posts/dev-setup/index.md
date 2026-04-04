@@ -52,7 +52,10 @@ Here is exactly how I set up a new machine, followed by a breakdown of the confi
    git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/zsh-syntax-highlighting
    ```
 
-3. **Change default shell to Zsh** (if not already):
+3. **Install Fonts**:
+   I use [Departure Mono](https://departuremono.com/) for my terminal. Download the `.otf` or `.ttf` files from the website and install them (e.g. double-click on macOS, or move to `~/.local/share/fonts` on Linux).
+
+4. **Change default shell to Zsh** (if not already):
    ```bash
    chsh -s $(which zsh)
    ```
