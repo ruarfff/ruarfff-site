@@ -1,42 +1,69 @@
 # My Dev Env setup
 
-## Main setup 
+I keep all my dotfiles and development configurations in sync across my personal Mac, my work Mac, and my Linux virtual machines using [Chezmoi](https://www.chezmoi.io/) and a GitHub repository.
 
-Mac version:
-```bash
-# Install Homebrew (if needed)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+Here is exactly how I set up a new machine, followed by a breakdown of the configurations themselves.
 
-brew install --cask ghostty
+## 1. Setting up a New Machine
 
-brew install --cask nikitabobko/tap/aerospace
+### On macOS
 
-# Install everything you actually need
-brew install chezmoi gh fzf eza bat ripgrep starship git-delta fd tmux fastfetch stern make gnupg age pinentry-mac mise jj hl
+1. **Install Homebrew** (if not already installed):
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
 
-# Install ONLY the zsh plugins you need (no oh-my-zsh!)
-git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/zsh-syntax-highlighting
-```
+2. **Install Chezmoi and essential tools**:
+   ```bash
+   brew install chezmoi gh fzf eza bat ripgrep starship git-delta fd tmux fastfetch stern make gnupg age pinentry-mac mise jj hl
+   ```
 
-Linux version:
+3. **Install GUI Apps** (macOS only):
+   ```bash
+   brew install --cask ghostty
+   brew install --cask nikitabobko/tap/aerospace
+   ```
 
-```
-sudo apt update
-```
+### On Linux (Ubuntu/Debian)
 
+1. **Update and install basics**:
+   ```bash
+   sudo apt update && sudo apt install -y curl git zsh tmux
+   ```
 
+2. **Install Chezmoi**:
+   ```bash
+   sh -c "$(curl -fsLS get.chezmoi.io)"
+   ```
+   *(Note: You may need to install the other CLI tools using `apt` or by installing Homebrew for Linux).*
 
+### Universal Setup Steps (All OSs)
 
-```bash
-chezmoi init 
-# This creates: ~/.local/share/chezmoi/
-```
+1. **Apply Dotfiles via Chezmoi**:
+   Initialize and apply your dotfiles straight from GitHub (assuming your dotfiles repo is `ruarfff/dotfiles`):
+   ```bash
+   chezmoi init --apply ruarfff
+   ```
 
-## Ghostty setup
+2. **Install Zsh Plugins** (no oh-my-zsh needed):
+   ```bash
+   mkdir -p ~/.zsh
+   git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+   git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/zsh-syntax-highlighting
+   ```
 
+3. **Change default shell to Zsh** (if not already):
+   ```bash
+   chsh -s $(which zsh)
+   ```
 
-/Users/obrirua/Library/Application Support/com.mitchellh.ghostty/config
+---
+
+## 2. Reference Configurations
+
+Here is what is inside those dotfiles being pulled down by Chezmoi:
+
+### Ghostty (`~/.config/ghostty/config`)
 
 ```toml
 theme = Citruszest
@@ -57,13 +84,11 @@ window-padding-x = 12
 window-padding-y = 12
 window-height = 40
 window-width = 120
-
 ```
 
-starship
+### Starship (`~/.config/starship.toml`)
 
 ```toml
-# ~/.config/starship.toml
 add_newline = false
 palette = "catppuccin-mocha"
 format = """
@@ -108,24 +133,13 @@ time_format = "%H:%M"
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
-
-
-
 ```
 
-gitignore
+### Git Config (`~/.gitconfig`)
 
-```bash
-.DS_Store
-*ignore/
-*.ignore.*
-.venv/
-.pytest_cache/
-```
+Uses `delta` for a vastly improved `git diff` experience.
 
-git config
-
-```bash
+```ini
 [user]
   name = "Ruairí O'Brien"
   email = 1150322+ruarfff@users.noreply.github.com
@@ -178,7 +192,7 @@ git config
   hist = log --graph --pretty=format:'%Cred%h%Creset %s%C(yellow)%d%Creset %Cgreen(%cr)%Creset [%an]' --abbrev-commit --date=relative
 ```
 
-tmux
+### Tmux (`~/.config/tmux/tmux.conf`)
 
 ```bash
 # Use Ctrl+A instead of Ctrl+B (easier to type)
@@ -216,7 +230,7 @@ set -g status-left "[#S] "
 set -g status-right "%H:%M %d-%b"
 ```
 
-zshrc
+### Zsh (`~/.zshrc`)
 
 ```bash
 eval "$(atuin init zsh --disable-up-arrow)"
@@ -226,7 +240,6 @@ bindkey '^[[B' down-line-or-search
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(mise activate zsh)"
-
 
 # Plugins
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh 
@@ -239,7 +252,6 @@ SAVEHIST=50000
 setopt SHARE_HISTORY 
 setopt HIST_IGNORE_ALL_DUPS 
 setopt HIST_IGNORE_SPACE
-
 
 # General ergonomics
 setopt AUTO_CD
@@ -277,59 +289,37 @@ export FZF_DEFAULT_OPTS='
 # Other tools
 export PATH="$HOMEBREW_PREFIX/opt/make/libexec/gnubin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"
+export PATH="$HOME/.local/bin:$PATH"
 
 function maintain() {
     echo "--- Updating Homebrew ---"
     brew update && brew upgrade && brew cleanup
     
     echo "--- macOS System Updates ---"
-    # Lists available updates; remove -i -a to just list
     softwareupdate -i -a
     
-    # Add other package managers here (npm, gem, pip, etc.)
-    rch "--- Other Updates ---"
+    echo "--- Other Updates ---"
     go install github.com/steveyegge/gastown/cmd/gt@latest
     go install github.com/steveyegge/beads/cmd/bd@latest
     echo "--- Done ---"
 }
-
 ```
 
+### Profile (`~/.zprofile`)
 
 ```bash
-echo "fastfetch" >> ~/.zprofile
-eval "$(/opt/homebrew/bin/brew shellenv)"
+eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
+fastfetch
 ```
 
-
-fzf and zoxide
+### Gitignore (`~/.gitignore`)
 
 ```bash
-brew install fzf zoxide
-$(brew --prefix)/opt/fzf/install  # installs keybindings and completion
-
-
-
-# fzf keybindings
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# zoxide integration
-eval "$(zoxide init zsh)"
-alias cd='z'  # optional: replaces cd entirely
-
+.DS_Store
+*ignore/
+*.ignore.*
+.venv/
+.pytest_cache/
 ```
-
-
-
-
-
-kubectl logs $(kubectl get pods | fzf)
-
-
-export FZF_DEFAULT_OPTS="
-  --color=bg+:#1e1e2e,bg:#11111b,spinner:#f5e0dc,hl:#f38ba8
-  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
-  --color=marker:#b4befe,fg+:#cdd6f4,prompt:#89b4fa,hl+:#f38ba8
-  --layout=reverse --border --height=80%
-"
-
