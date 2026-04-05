@@ -1,3 +1,9 @@
+---
+title: My Dev Env Setup
+date: "2026-04-04"
+description: How I set up my development environment and keep dotfiles in sync across macOS and Linux using Chezmoi.
+---
+
 # My Dev Env setup
 
 I keep all my dotfiles and development configurations in sync across my personal Mac, my work Mac, and my Linux virtual machines using [Chezmoi](https://www.chezmoi.io/) and a GitHub repository.
