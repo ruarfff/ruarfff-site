@@ -64,4 +64,32 @@ test.describe("Mobile Responsiveness", () => {
     const title = page.locator("h1");
     await expect(title).toBeVisible();
   });
+
+  test("legacy paths redirect to posts", async ({ page }) => {
+    await page.goto("/angular-and-redux");
+    await expect(page).toHaveURL(/\/posts\/angular-and-redux$/);
+  });
+
+  test("dark mode toggles theme class on html", async ({ page }) => {
+    await page.goto("/about");
+    const htmlElement = page.locator("html");
+    const button = page.locator("button.js-change-theme");
+    await expect(button).toBeVisible();
+
+    const initialIsDark = await htmlElement.evaluate((el) =>
+      el.classList.contains("dark")
+    );
+
+    await button.click();
+    const afterClickIsDark = await htmlElement.evaluate((el) =>
+      el.classList.contains("dark")
+    );
+    expect(afterClickIsDark).toBe(!initialIsDark);
+
+    await button.click();
+    const afterSecondClickIsDark = await htmlElement.evaluate((el) =>
+      el.classList.contains("dark")
+    );
+    expect(afterSecondClickIsDark).toBe(initialIsDark);
+  });
 });

@@ -55,8 +55,25 @@ export default function App() {
         <meta charSet="utf-8" />
         <Meta />
         <Links />
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: required to prevent flash of unstyled content
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
       </head>
-      <body className="font-mono" suppressHydrationWarning={true}>
+      <body
+        className="font-mono bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 min-h-screen transition-colors duration-200"
+        suppressHydrationWarning={true}
+      >
         <script
           async
           src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}

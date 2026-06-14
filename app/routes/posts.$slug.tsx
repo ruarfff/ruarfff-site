@@ -15,7 +15,13 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 
 export const meta: MetaFunction = ({ data }) => {
   const post = data as Post | undefined;
-  return [{ title: `${post?.title}| Ruairí's Site` }];
+  return [
+    { title: `${post?.title} | Ruairí's Site` },
+    {
+      name: "description",
+      content: post?.description || `Read "${post?.title}" by Ruairí O'Brien.`,
+    },
+  ];
 };
 
 export default function PostSlug() {
@@ -28,7 +34,9 @@ export default function PostSlug() {
           <h1 className="text-2xl md:text-3xl font-semibold mb-4">
             {post.title}
           </h1>
-          <p className="mb-4">{post.date}</p>
+          <p className="mb-4 text-gray-500 dark:text-gray-400 text-sm">
+            {post.date}
+          </p>
 
           <ReactMarkdown
             remarkPlugins={[gfm]}
