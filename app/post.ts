@@ -29,6 +29,13 @@ function isValidPostAttributes(
   );
 }
 
+function formatDate(date: unknown): string {
+  if (date instanceof Date) {
+    return date.toISOString().split("T")[0];
+  }
+  return String(date || "");
+}
+
 export async function getPosts() {
   try {
     const dir = await fs.readdir(postsPath);
@@ -46,7 +53,7 @@ export async function getPosts() {
           slug: `/posts/${filename.replace(/\.md$/, "")}`,
           title: attributes.title,
           description: attributes.description,
-          date: attributes.date,
+          date: formatDate(attributes.date),
         };
       })
     );
@@ -69,6 +76,6 @@ export async function getPost(slug: string) {
     markdown: body,
     title: attributes.title,
     description: attributes.description,
-    date: attributes.date,
+    date: formatDate(attributes.date),
   };
 }
