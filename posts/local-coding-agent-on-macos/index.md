@@ -2,7 +2,7 @@
 title: Local Coding Agent on MacOS
 description: You can run a local coding agent on any reasonably powerful Apple Silicon Mac. You need to have python installed.
 date: "2026-06-15"
-devto_id: 5055341
+devto_id: 3893142
 devto_url: https://dev.to/ruarfff/local-coding-agent-on-macos-1ggf-temp-slug-5055341
 tags:
   - macos
@@ -123,7 +123,7 @@ copilot-local-mlx() {
 }
 ```
 
-If you add that to your `~./.bashrc`, `~/.zshrc` etc. you can run copilot with a local model by running `copilot-local-mlx`.
+If you add that to your `~/.bashrc`, `~/.zshrc` etc. you can run copilot with a local model by running `copilot-local-mlx`.
 
 Obviously modify the settings to suit your setup.
 

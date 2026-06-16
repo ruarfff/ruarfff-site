@@ -15,7 +15,8 @@
     "check:fix": "biome check --write .",
     "start": "react-router-serve ./build/server/index.js",
     "test": "vitest",
-    "typecheck": "react-router typegen && tsc -b"
+    "typecheck": "react-router typegen && tsc -b",
+    "publish-to-devto": "node --experimental-strip-types scripts/publish-to-devto.ts"
   },
   "dependencies": {
     "@netlify/functions": "^2.8.1",

@@ -82,3 +82,28 @@ netlify deploy --build
 # production deployment
 netlify deploy --build --prod
 ```
+
+## Publishing to Dev.to
+
+You can publish your blog posts to Dev.to, automatically setting canonical URLs and converting relative image paths to absolute production URLs.
+
+To run the script and select a post from an interactive menu:
+
+```sh
+npm run publish-to-devto
+```
+
+Or target a specific post slug directly:
+
+```sh
+npm run publish-to-devto <slug>
+```
+
+### Setup
+
+The script requires a Dev.to API Key. On the first run, the script will prompt you for your key and offer to save it to a `.env` file in the project root. Alternatively, you can create a `.env` file yourself:
+
+```env
+DEVTO_API_KEY=your_dev_to_api_key_here
+```
+
