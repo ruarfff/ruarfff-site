@@ -3,6 +3,7 @@ import type { MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import rehypeSlug from "rehype-slug";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
 import { getPost, type Post } from "~/post";
@@ -40,6 +41,7 @@ export default function PostSlug() {
 
           <ReactMarkdown
             remarkPlugins={[gfm]}
+            rehypePlugins={[rehypeSlug]}
             className="prose prose-lg md:prose-xl dark:prose-invert max-w-none"
             components={{
               img: ({ src, alt, ...props }) => {
