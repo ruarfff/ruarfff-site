@@ -4,7 +4,14 @@ import { Link, useLoaderData } from "react-router";
 
 import type { Post } from "~/post";
 import { getPosts } from "~/post";
-export const meta: MetaFunction = () => [{ title: "Ruairí's Site" }];
+export const meta: MetaFunction = () => [
+  { title: "Ruairí's Site" },
+  {
+    name: "description",
+    content:
+      "Ruairí's personal site and blog, sharing notes and writeups on programming, machine learning, software engineering, and other technical topics.",
+  },
+];
 
 export const loader = async () => {
   return getPosts();
@@ -21,23 +28,25 @@ export default function Index() {
           .map((post) => (
             <li
               key={post.slug}
-              className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between rounded border border-gray-600 p-4"
+              className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between rounded border border-gray-600 dark:border-gray-700 p-4 transition-colors duration-200"
             >
               <div>
                 <Link
                   to={post.slug}
-                  className="text-xl md:text-2xl font-semibold no-underline hover:underline"
+                  className="text-xl md:text-2xl font-semibold no-underline hover:underline text-gray-900 dark:text-gray-100"
                 >
                   {post.title}
                 </Link>
-                <p className="mt-2 text-base text-gray-600">
+                <p className="mt-2 text-base text-gray-600 dark:text-gray-400">
                   {post.description}
                 </p>
-                <span className="mt-2 block text-sm text-gray-500 md:hidden">
+                <span className="mt-2 block text-sm text-gray-500 dark:text-gray-400 md:hidden">
                   {post.date}
                 </span>
               </div>
-              <span className="hidden md:block">{post.date}</span>
+              <span className="hidden md:block text-gray-500 dark:text-gray-400">
+                {post.date}
+              </span>
             </li>
           ))}
       </ul>
