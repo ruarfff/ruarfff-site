@@ -92,4 +92,13 @@ test.describe("Mobile Responsiveness", () => {
     );
     expect(afterSecondClickIsDark).toBe(initialIsDark);
   });
+
+  test("blog post headings have id attributes for anchor links", async ({
+    page,
+  }) => {
+    await page.goto("/posts/a-gaggle-of-agents");
+    const heading = page.locator("h2#example-project-setup");
+    await expect(heading).toBeVisible();
+    await expect(heading).toHaveText("Example Project Setup");
+  });
 });
