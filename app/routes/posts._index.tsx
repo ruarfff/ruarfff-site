@@ -31,12 +31,19 @@ export default function Posts() {
               className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between rounded border border-gray-600 dark:border-gray-700 p-4 transition-colors duration-200"
             >
               <div>
-                <Link
-                  to={post.slug}
-                  className="text-lg md:text-2xl font-semibold no-underline hover:underline text-gray-900 dark:text-gray-100"
-                >
-                  {post.title}
-                </Link>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link
+                    to={post.slug}
+                    className="text-lg md:text-2xl font-semibold no-underline hover:underline text-gray-900 dark:text-gray-100"
+                  >
+                    {post.title}
+                  </Link>
+                  {post.draft ? (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900 dark:bg-amber-900 dark:text-amber-100">
+                      Draft
+                    </span>
+                  ) : null}
+                </div>
                 <p className="mt-2 text-base text-gray-600 dark:text-gray-400">
                   {post.description}
                 </p>

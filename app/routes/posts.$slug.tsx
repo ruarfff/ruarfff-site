@@ -35,9 +35,14 @@ export default function PostSlug() {
           <h1 className="text-2xl md:text-3xl font-semibold mb-4">
             {post.title}
           </h1>
-          <p className="mb-4 text-gray-500 dark:text-gray-400 text-sm">
-            {post.date}
-          </p>
+          <div className="mb-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <p>{post.date}</p>
+            {post.draft ? (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900 dark:bg-amber-900 dark:text-amber-100">
+                Draft preview
+              </span>
+            ) : null}
+          </div>
 
           <ReactMarkdown
             remarkPlugins={[gfm]}
