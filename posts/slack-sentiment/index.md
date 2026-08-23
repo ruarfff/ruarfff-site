@@ -1,6 +1,8 @@
 ---
 title: Check the Mood of a Slack Channel using Machine Learning
 date: "2021-02-10"
+topics:
+  - Agents & AI
 ---
 
 [Sentiment](https://dictionary.cambridge.org/dictionary/english/sentiment)

@@ -3,6 +3,9 @@ title: "Where to put Angular with Redux"
 excerptOther: "Writing unit tests in angular is not fun. Redux is good but complicates tests a little too if put in the wrong places. This post covers some lessons I learned around that."
 postDate: "2018-03-05"
 date: "2018-03-05"
+topics:
+  - Web
+  - Software design
 tags:
   - redux
   - javascript

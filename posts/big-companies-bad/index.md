@@ -3,6 +3,8 @@ title: "Why, in big companies, is it easy to do bad things and hard to do good t
 description: "A fairly pointless rant about issues in big companies and how they do software."
 postDate: "2023-06-08"
 date: "2023-06-08"
+topics:
+  - Teams & culture
 tags:
   - memes
   - softwareengineering

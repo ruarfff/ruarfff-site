@@ -1,6 +1,8 @@
 ---
 title: A Gaggle of Agents
 date: "2025-11-29"
+topics:
+  - Agents & AI
 description: Lessons from trying to get stuff done with coding agents.
 ---
 

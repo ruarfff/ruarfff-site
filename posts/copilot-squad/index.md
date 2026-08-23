@@ -2,6 +2,8 @@
 title: Copilot Squad
 description: There are two sections to this. In the first section, I discuss what squad is, why it might be useful...
 date: "2026-05-05"
+topics:
+  - Agents & AI
 ---
 
 There are two sections to this. In the first section, I discuss what [squad](https://bradygaster.github.io/squad/) is, why it might be useful to learn and

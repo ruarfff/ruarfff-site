@@ -1,6 +1,8 @@
 ---
 title: My Dev Tool List 2025
 date: "2025-12-02"
+topics:
+  - Tools & setup
 description: The tools I use for development in 2025
 ---
 

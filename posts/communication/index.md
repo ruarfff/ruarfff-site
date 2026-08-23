@@ -3,6 +3,9 @@ title: "About Communication"
 description: "Is Code Communication?"
 postDate: "2016-03-23"
 date: "2016-03-23"
+topics:
+  - Teams & culture
+  - Software design
 tags:
   - code
   - software

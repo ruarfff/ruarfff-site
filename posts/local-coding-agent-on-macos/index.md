@@ -2,6 +2,9 @@
 title: Local Coding Agent on MacOS
 description: You can run a local coding agent on any reasonably powerful Apple Silicon Mac. You need to have python installed.
 date: "2026-06-15"
+topics:
+  - Agents & AI
+  - Tools & setup
 devto_id: 3893142
 devto_url: https://dev.to/ruarfff/local-coding-agent-on-macos-1ggf-temp-slug-5055341
 tags:

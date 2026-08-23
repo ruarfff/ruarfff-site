@@ -3,6 +3,8 @@ title: "Introduction to Kubernetes"
 description: "A quick intro to using Kubernetes and some of the features it has"
 postDate: "2017-06-27"
 date: "2017-06-27"
+topics:
+  - Delivery & infrastructure
 tags:
   - kubernetes
 ---

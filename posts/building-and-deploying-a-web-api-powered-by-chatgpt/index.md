@@ -3,6 +3,10 @@ title: "Building and deploying a web API powered by ChatGPT"
 description: "Using an example application, deploy an application that uses the ChatGPT API to do something that would be much harder to do without prompt engineering and ChatGPT."
 postDate: "2023-05-24"
 date: "2023-05-24"
+topics:
+  - Agents & AI
+  - Web
+  - Python
 tags:
   - fastapi
   - python

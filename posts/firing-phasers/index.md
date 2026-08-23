@@ -3,6 +3,9 @@ title: "Start Game Coding in ES6"
 description: "Setting up phaser projects quickly"
 postDate: "2016-11-10"
 date: "2016-11-10"
+topics:
+  - Web
+  - JavaScript
 tags:
   - phaser
   - yeoman

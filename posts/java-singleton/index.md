@@ -1,6 +1,8 @@
 ---
 title: "Java Singleton"
 date: "2012-02-01"
+topics:
+  - Software design
 ---
 
 As the name suggests, a singleton is used when you want exactly one of something in you program.

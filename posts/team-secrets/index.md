@@ -1,6 +1,9 @@
 ---
 title: Managing local app secrets and sharing secrets with your team
 date: "2021-01-11"
+topics:
+  - Tools & setup
+  - Software design
 description: Storing application secrets locally in plain text can be risky and lead to them being accidentally committed to repositories. Sharing secrets across a team can be a pain too. This post describes one solution that could help.
 ---
 

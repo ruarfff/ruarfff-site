@@ -14,8 +14,8 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
   return getPost(params.slug);
 };
 
-export const meta: MetaFunction = ({ data }) => {
-  const post = data as Post | undefined;
+export const meta: MetaFunction = ({ loaderData }) => {
+  const post = loaderData as Post | undefined;
   return [
     { title: `${post?.title} | Ruairí's Site` },
     {

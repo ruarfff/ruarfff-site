@@ -3,6 +3,9 @@ title: "Simple development environment setup with docker compose"
 description: "Setting up a very simple and repeatable development environment with docker compose."
 postDate: "2018-04-11"
 date: "2018-04-11"
+topics:
+  - Tools & setup
+  - Delivery & infrastructure
 tags:
   - software
   - docker

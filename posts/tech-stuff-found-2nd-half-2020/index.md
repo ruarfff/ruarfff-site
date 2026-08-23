@@ -1,6 +1,8 @@
 ---
 title: Tech stuff found in the second half of 2020
 date: "2020-12-31"
+topics:
+  - Tools & setup
 description: The best tech resources I discovered in the second half of 2020
 ---
 

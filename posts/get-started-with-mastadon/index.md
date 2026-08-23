@@ -3,6 +3,8 @@ title: "Getting started with Mastodon"
 description: "Getting connected to the Fediverse is slightly different to traditoinal social media sites but still pretty easy."
 postDate: "2023-06-18"
 date: "2023-06-18"
+topics:
+  - Web
 tags:
   - mastodon
   - fediverse

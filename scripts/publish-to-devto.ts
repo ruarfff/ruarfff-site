@@ -31,7 +31,10 @@ async function loadEnv() {
       if (match) {
         const key = match[1].trim();
         let val = match[2].trim();
-        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        if (
+          (val.startsWith('"') && val.endsWith('"')) ||
+          (val.startsWith("'") && val.endsWith("'"))
+        ) {
           val = val.slice(1, -1);
         }
         process.env[key] = val;
@@ -51,10 +54,10 @@ async function saveApiKeyToEnv(key: string) {
   } catch (_e) {
     // file doesn't exist
   }
-  
+
   const lines = content.split("\n");
   let found = false;
-  const newLines = lines.map(line => {
+  const newLines = lines.map((line) => {
     if (line.trim().startsWith("DEVTO_API_KEY=")) {
       found = true;
       return `DEVTO_API_KEY=${key}`;
@@ -76,10 +79,12 @@ function ask(query: string): Promise<string> {
     input: process.stdin,
     output: process.stdout,
   });
-  return new Promise((resolve) => rl.question(query, (ans) => {
-    rl.close();
-    resolve(ans);
-  }));
+  return new Promise((resolve) =>
+    rl.question(query, (ans) => {
+      rl.close();
+      resolve(ans);
+    })
+  );
 }
 
 // Simple YAML stringifier
@@ -103,7 +108,9 @@ function stringifyYAML(obj: Record<string, unknown>): string {
       if (value instanceof Date) {
         valStr = value.toISOString().split("T")[0];
       } else if (typeof value === "string") {
-        const needsQuotes = /[:#\-,[\]{}&*!|>'"%@`\x60]|^[ \t]|[ \t]$/.test(value) || value.includes("\n");
+        const needsQuotes =
+          /[:#\-,[\]{}&*!|>'"%@`\x60]|^[ \t]|[ \t]$/.test(value) ||
+          value.includes("\n");
         if (value.includes("\n")) {
           valStr = `|-\n  ${value.replace(/\n/g, "\n  ")}`;
         } else if (needsQuotes) {
@@ -178,19 +185,25 @@ async function getPosts(): Promise<PostItem[]> {
 
 async function run() {
   console.log("\x1b[36m\x1b[1m=== DEV.to Blog Publisher ===\x1b[0m\n");
-  
+
   await loadEnv();
 
   let apiKey = process.env.DEVTO_API_KEY;
   if (!apiKey) {
-    console.log("\x1b[33mDEVTO_API_KEY environment variable is not set.\x1b[0m");
+    console.log(
+      "\x1b[33mDEVTO_API_KEY environment variable is not set.\x1b[0m"
+    );
     apiKey = await ask("Enter your Dev.to API Key: ");
     apiKey = apiKey.trim();
     if (!apiKey) {
-      console.error("\x1b[31mError: Dev.to API Key is required to publish.\x1b[0m");
+      console.error(
+        "\x1b[31mError: Dev.to API Key is required to publish.\x1b[0m"
+      );
       process.exit(1);
     }
-    const saveEnv = await ask("Would you like to save this key to your local .env file? (y/n): ");
+    const saveEnv = await ask(
+      "Would you like to save this key to your local .env file? (y/n): "
+    );
     if (saveEnv.toLowerCase().startsWith("y")) {
       await saveApiKeyToEnv(apiKey);
     }
@@ -209,9 +222,11 @@ async function run() {
   const cliSlug = args[0];
 
   if (cliSlug) {
-    selectedPost = posts.find(p => p.slug === cliSlug);
+    selectedPost = posts.find((p) => p.slug === cliSlug);
     if (!selectedPost) {
-      console.error(`\x1b[31mError: Post with slug '${cliSlug}' not found.\x1b[0m`);
+      console.error(
+        `\x1b[31mError: Post with slug '${cliSlug}' not found.\x1b[0m`
+      );
       console.log("\nAvailable posts:");
       posts.forEach((p) => {
         console.log(` - ${p.slug}`);
@@ -221,9 +236,14 @@ async function run() {
   } else {
     console.log("Select a post to publish:");
     posts.forEach((p, idx) => {
-      const dateStr = formatDate(p.attributes.date || p.attributes.postDate) || "No Date";
-      const status = p.attributes.devto_id ? `\x1b[32mPublished (ID: ${p.attributes.devto_id})\x1b[0m` : "\x1b[33mUnpublished\x1b[0m";
-      console.log(`  ${String(idx + 1).padStart(2)}. [${dateStr}] ${p.slug.padEnd(40)} - ${status}`);
+      const dateStr =
+        formatDate(p.attributes.date || p.attributes.postDate) || "No Date";
+      const status = p.attributes.devto_id
+        ? `\x1b[32mPublished (ID: ${p.attributes.devto_id})\x1b[0m`
+        : "\x1b[33mUnpublished\x1b[0m";
+      console.log(
+        `  ${String(idx + 1).padStart(2)}. [${dateStr}] ${p.slug.padEnd(40)} - ${status}`
+      );
     });
     console.log("");
 
@@ -240,10 +260,14 @@ async function run() {
   const isUpdate = !!attributes.devto_id;
 
   console.log(`\n\x1b[36mProcessing: ${attributes.title} (${slug})\x1b[0m`);
-  
+
   if (isUpdate) {
-    console.log(`Status: Already published to Dev.to (ID: ${attributes.devto_id}, URL: ${attributes.devto_url})`);
-    const confirmUpdate = await ask("Do you want to update the existing Dev.to post? (y/n): ");
+    console.log(
+      `Status: Already published to Dev.to (ID: ${attributes.devto_id}, URL: ${attributes.devto_url})`
+    );
+    const confirmUpdate = await ask(
+      "Do you want to update the existing Dev.to post? (y/n): "
+    );
     if (!confirmUpdate.toLowerCase().startsWith("y")) {
       console.log("Cancelled.");
       process.exit(0);
@@ -259,9 +283,9 @@ async function run() {
   // Parse tags
   let tags: string[] = [];
   if (Array.isArray(attributes.tags)) {
-    tags = attributes.tags.map(t => String(t).trim().toLowerCase());
+    tags = attributes.tags.map((t) => String(t).trim().toLowerCase());
   } else if (typeof attributes.tags === "string") {
-    tags = attributes.tags.split(",").map(t => t.trim().toLowerCase());
+    tags = attributes.tags.split(",").map((t) => t.trim().toLowerCase());
   }
 
   // Construct request payload
@@ -273,13 +297,13 @@ async function run() {
       canonical_url: canonicalUrl,
       description: attributes.description || "",
       tags: tags.slice(0, 4), // Forem API limits to 4 tags max
-    }
+    },
   };
 
-  const url = isUpdate 
+  const url = isUpdate
     ? `https://dev.to/api/articles/${attributes.devto_id}`
     : "https://dev.to/api/articles";
-  
+
   const method = isUpdate ? "PUT" : "POST";
 
   console.log(`\nSending request to DEV.to (${method} ${url})...`);
@@ -290,18 +314,20 @@ async function run() {
       headers: {
         "Content-Type": "application/json",
         "api-key": apiKey,
-        "accept": "application/vnd.forem.api-v1+json",
+        accept: "application/vnd.forem.api-v1+json",
       },
       body: JSON.stringify(articlePayload),
     });
 
     if (response.status === 404 && isUpdate) {
-      console.log("\x1b[33mDev.to returned 404. Checking if the article exists under a different ID...\x1b[0m");
+      console.log(
+        "\x1b[33mDev.to returned 404. Checking if the article exists under a different ID...\x1b[0m"
+      );
       const meRes = await fetch("https://dev.to/api/articles/me/all", {
         headers: {
           "api-key": apiKey,
-          "accept": "application/vnd.forem.api-v1+json",
-        }
+          accept: "application/vnd.forem.api-v1+json",
+        },
       });
       if (meRes.ok) {
         interface DevToArticle {
@@ -312,13 +338,15 @@ async function run() {
         }
         const myArticles = (await meRes.json()) as DevToArticle[];
         const matchingArticle = myArticles.find(
-          art => 
-            art.slug === slug || 
-            art.url.includes(slug) || 
+          (art) =>
+            art.slug === slug ||
+            art.url.includes(slug) ||
             art.title.toLowerCase() === attributes.title.toLowerCase()
         );
         if (matchingArticle) {
-          console.log(`\x1b[32m✔ Found matching article on Dev.to with correct ID: ${matchingArticle.id}.\x1b[0m`);
+          console.log(
+            `\x1b[32m✔ Found matching article on Dev.to with correct ID: ${matchingArticle.id}.\x1b[0m`
+          );
           console.log("Updating local frontmatter and retrying...");
           attributes.devto_id = matchingArticle.id;
           attributes.devto_url = matchingArticle.url;
@@ -328,7 +356,7 @@ async function run() {
             headers: {
               "Content-Type": "application/json",
               "api-key": apiKey,
-              "accept": "application/vnd.forem.api-v1+json",
+              accept: "application/vnd.forem.api-v1+json",
             },
             body: JSON.stringify(articlePayload),
           });
@@ -343,12 +371,20 @@ async function run() {
 
     const result = (await response.json()) as { id: number; url: string };
 
-    console.log(`\n\x1b[32m✔ Success! Post ${isUpdate ? "updated" : "created"} on Dev.to.\x1b[0m`);
+    console.log(
+      `\n\x1b[32m✔ Success! Post ${isUpdate ? "updated" : "created"} on Dev.to.\x1b[0m`
+    );
     console.log(`Dev.to URL: \x1b[34m${result.url}\x1b[0m`);
 
     // If it's a new post or metadata changed, update local index.md
-    if (!attributes.devto_id || attributes.devto_id !== result.id || attributes.devto_url !== result.url) {
-      console.log("Updating local markdown file with devto_id and devto_url...");
+    if (
+      !attributes.devto_id ||
+      attributes.devto_id !== result.id ||
+      attributes.devto_url !== result.url
+    ) {
+      console.log(
+        "Updating local markdown file with devto_id and devto_url..."
+      );
       const updatedAttributes = {
         ...attributes,
         devto_id: result.id,

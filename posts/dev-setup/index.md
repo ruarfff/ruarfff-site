@@ -1,6 +1,8 @@
 ---
 title: My Dev Env Setup
 date: "2026-04-04"
+topics:
+  - Tools & setup
 description: How I set up my development environment and keep dotfiles in sync across macOS and Linux using Chezmoi.
 ---
 

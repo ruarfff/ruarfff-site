@@ -3,6 +3,10 @@ title: "Getting a ChatGPT powered, Python API, production ready"
 description: "Getting an application working is only the beginning. Work on automating deployment, using caching and getting the application ready for production."
 postDate: "2023-06-02"
 date: "2023-06-02"
+topics:
+  - Agents & AI
+  - Delivery & infrastructure
+  - Python
 tags:
   - fastapi
   - python

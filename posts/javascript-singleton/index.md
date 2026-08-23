@@ -1,6 +1,9 @@
 ---
 title: "JavaScript Singleton"
 date: "2012-02-17"
+topics:
+  - JavaScript
+  - Software design
 ---
 
 If you are new to JavaScript but have learned to program in Java, C++, C# or some other C based object orientated language then you might think JavaScript is a bit weird. I straight away found myself wondering why I can’t make a class. The whole variable scope thing got to me a bit too but eventually I found that these are minor issues with many methods to overcome them. Also nowadays you can just use something like CoffeeScript which compiles to JavaScript but offers better syntax and stuff like classes.

@@ -1,6 +1,9 @@
 ---
 title: Understanding python async with FastAPI
 date: "2022-08-26"
+topics:
+  - Python
+  - Software design
 description: Understanding async python with asyncio and fastapi
 ---
 
