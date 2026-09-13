@@ -5,6 +5,7 @@ import parseFrontMatter from "front-matter";
 
 interface PostAttributes {
   title: string;
+  section?: "tech" | "personal";
   date?: string | Date;
   postDate?: string | Date;
   description?: string;
@@ -163,6 +164,13 @@ async function getPosts(): Promise<PostItem[]> {
       try {
         const fileContent = await fs.readFile(filePath, "utf-8");
         const fm = parseFrontMatter<PostAttributes>(fileContent);
+        // Only tech posts can be sent to Dev.to. Older tech posts omit section.
+        if (
+          fm.attributes.section !== undefined &&
+          fm.attributes.section !== "tech"
+        ) {
+          continue;
+        }
         posts.push({
           slug,
           filePath,
@@ -185,6 +193,54 @@ async function getPosts(): Promise<PostItem[]> {
 
 async function run() {
   console.log("\x1b[36m\x1b[1m=== DEV.to Blog Publisher ===\x1b[0m\n");
+
+  const posts = await getPosts();
+
+  if (posts.length === 0) {
+    console.error(
+      "\x1b[31mNo tech blog posts found in 'posts/' directory.\x1b[0m"
+    );
+    process.exit(1);
+  }
+
+  let selectedPost: PostItem | undefined;
+  const args = process.argv.slice(2);
+  const cliSlug = args[0];
+
+  if (cliSlug) {
+    selectedPost = posts.find((p) => p.slug === cliSlug);
+    if (!selectedPost) {
+      console.error(
+        `\x1b[31mError: Post '${cliSlug}' was not found or is not a tech blog post. Only tech blog posts can be sent to Dev.to.\x1b[0m`
+      );
+      console.log("\nAvailable tech blog posts:");
+      posts.forEach((p) => {
+        console.log(` - ${p.slug}`);
+      });
+      process.exit(1);
+    }
+  } else {
+    console.log("Select a tech blog post to publish:");
+    posts.forEach((p, idx) => {
+      const dateStr =
+        formatDate(p.attributes.date || p.attributes.postDate) || "No Date";
+      const status = p.attributes.devto_id
+        ? `\x1b[32mPublished (ID: ${p.attributes.devto_id})\x1b[0m`
+        : "\x1b[33mUnpublished\x1b[0m";
+      console.log(
+        `  ${String(idx + 1).padStart(2)}. [${dateStr}] ${p.slug.padEnd(40)} - ${status}`
+      );
+    });
+    console.log("");
+
+    const answer = await ask("Enter the number of the post: ");
+    const num = parseInt(answer.trim(), 10);
+    if (Number.isNaN(num) || num < 1 || num > posts.length) {
+      console.error("\x1b[31mInvalid selection.\x1b[0m");
+      process.exit(1);
+    }
+    selectedPost = posts[num - 1];
+  }
 
   await loadEnv();
 
@@ -210,51 +266,6 @@ async function run() {
   }
 
   const canonicalHost = process.env.CANONICAL_HOST || "https://ruarfff.com";
-  const posts = await getPosts();
-
-  if (posts.length === 0) {
-    console.error("\x1b[31mNo blog posts found in 'posts/' directory.\x1b[0m");
-    process.exit(1);
-  }
-
-  let selectedPost: PostItem | undefined;
-  const args = process.argv.slice(2);
-  const cliSlug = args[0];
-
-  if (cliSlug) {
-    selectedPost = posts.find((p) => p.slug === cliSlug);
-    if (!selectedPost) {
-      console.error(
-        `\x1b[31mError: Post with slug '${cliSlug}' not found.\x1b[0m`
-      );
-      console.log("\nAvailable posts:");
-      posts.forEach((p) => {
-        console.log(` - ${p.slug}`);
-      });
-      process.exit(1);
-    }
-  } else {
-    console.log("Select a post to publish:");
-    posts.forEach((p, idx) => {
-      const dateStr =
-        formatDate(p.attributes.date || p.attributes.postDate) || "No Date";
-      const status = p.attributes.devto_id
-        ? `\x1b[32mPublished (ID: ${p.attributes.devto_id})\x1b[0m`
-        : "\x1b[33mUnpublished\x1b[0m";
-      console.log(
-        `  ${String(idx + 1).padStart(2)}. [${dateStr}] ${p.slug.padEnd(40)} - ${status}`
-      );
-    });
-    console.log("");
-
-    const answer = await ask("Enter the number of the post: ");
-    const num = parseInt(answer.trim(), 10);
-    if (Number.isNaN(num) || num < 1 || num > posts.length) {
-      console.error("\x1b[31mInvalid selection.\x1b[0m");
-      process.exit(1);
-    }
-    selectedPost = posts[num - 1];
-  }
 
   const { slug, filePath, attributes, body } = selectedPost;
   const isUpdate = !!attributes.devto_id;

@@ -10,6 +10,7 @@ export type Post = {
   markdown: string;
   description?: string;
   draft: boolean;
+  section: "tech" | "personal";
 };
 
 export type PostMarkdownAttributes = {
@@ -17,6 +18,7 @@ export type PostMarkdownAttributes = {
   date: string;
   description?: string;
   draft?: boolean;
+  section?: "tech" | "personal";
 };
 
 const postsPath = path.resolve("posts");
@@ -46,7 +48,7 @@ function includeDrafts(): boolean {
   return process.env.NODE_ENV === "development";
 }
 
-export async function getPosts() {
+export async function getPosts(section?: Post["section"]) {
   try {
     const dir = await fs.readdir(postsPath);
     const posts = await Promise.all(
@@ -65,10 +67,18 @@ export async function getPosts() {
           description: attributes.description,
           date: formatDate(attributes.date),
           draft: isDraft(attributes),
+          section:
+            attributes.section === "personal"
+              ? ("personal" as const)
+              : ("tech" as const),
         };
       })
     );
-    return includeDrafts() ? posts : posts.filter((post) => !post.draft);
+    return posts.filter(
+      (post) =>
+        (includeDrafts() || !post.draft) &&
+        (!section || post.section === section)
+    );
   } catch (e) {
     console.log(e);
     return Promise.resolve([]);
@@ -94,5 +104,9 @@ export async function getPost(slug: string) {
     description: attributes.description,
     date: formatDate(attributes.date),
     draft,
+    section:
+      attributes.section === "personal"
+        ? ("personal" as const)
+        : ("tech" as const),
   };
 }

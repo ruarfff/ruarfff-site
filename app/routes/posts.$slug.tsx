@@ -1,11 +1,11 @@
 import ReactMarkdown from "react-markdown";
 import type { MetaFunction } from "react-router";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import rehypeSlug from "rehype-slug";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
+import articleContents from "~/article-contents";
 import { getPost, type Post } from "~/post";
 import type { Route } from "./+types/posts.$slug";
 
@@ -32,6 +32,14 @@ export default function PostSlug() {
     <div className={`min-h-screen flex flex-col`}>
       <main className="flex-grow p-4 md:p-6">
         <article className="max-w-4xl mx-auto">
+          <Link
+            className="mb-6 inline-block text-sm underline"
+            to={post.section === "personal" ? "/personal" : "/"}
+          >
+            {post.section === "personal"
+              ? "Back to Personal"
+              : "Back to Tech blog"}
+          </Link>
           <h1 className="text-2xl md:text-3xl font-semibold mb-4">
             {post.title}
           </h1>
@@ -46,7 +54,7 @@ export default function PostSlug() {
 
           <ReactMarkdown
             remarkPlugins={[gfm]}
-            rehypePlugins={[rehypeSlug]}
+            rehypePlugins={[articleContents]}
             className="prose prose-lg md:prose-xl dark:prose-invert max-w-none"
             components={{
               img: ({ src, alt, ...props }) => {

@@ -85,7 +85,7 @@ netlify deploy --build --prod
 
 ## Publishing to Dev.to
 
-You can publish your blog posts to Dev.to, automatically setting canonical URLs and converting relative image paths to absolute production URLs.
+You can publish tech blog posts to Dev.to, automatically setting canonical URLs and converting relative image paths to absolute production URLs. Personal posts are excluded from the menu and cannot be published or updated by slug. Only posts with `section: tech` or no section are eligible.
 
 To run the script and select a post from an interactive menu:
 
@@ -107,3 +107,32 @@ The script requires a Dev.to API Key. On the first run, the script will prompt y
 DEVTO_API_KEY=your_dev_to_api_key_here
 ```
 
+
+## Writing sections
+
+Posts live in `posts/<slug>/index.md`. Existing posts appear in the tech blog.
+To add a post to Personal, set `section: personal` in its front matter:
+
+```yaml
+---
+title: A title for your post
+date: 2026-09-13
+description: A short description.
+section: personal
+draft: true
+---
+```
+
+Drafts appear only during local development. Remove `draft: true` when ready
+to publish. Both sections use the existing `/posts/<slug>` article URLs and
+co-located images. The Personal index is at `/personal`.
+
+## Article contents
+
+The site generates a collapsible table of contents from Markdown headings
+(`##` through `######`) when a post has at least two sections. Subheadings
+appear under their parent section. Heading IDs also support direct links.
+
+Existing `Contents` lists and empty HTML heading anchors are handled during
+rendering. The source Markdown stays unchanged for Dev.to publishing. New
+posts need only normal Markdown headings; a manual contents list is optional.
