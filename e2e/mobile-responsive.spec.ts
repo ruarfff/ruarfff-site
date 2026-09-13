@@ -97,7 +97,7 @@ test.describe("Mobile Responsiveness", () => {
   test("site and code themes are independent and persist across navigation", async ({
     page,
   }) => {
-    await page.goto("/about");
+    await page.goto("/about", { waitUntil: "networkidle" });
     await page.locator("summary").filter({ hasText: "Theme" }).click();
     const site = page.getByRole("switch", { name: "Site theme" });
     const code = page.getByRole("switch", { name: "Code theme" });
