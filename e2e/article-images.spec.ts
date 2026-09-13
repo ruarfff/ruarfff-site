@@ -59,6 +59,8 @@ test("delayed image bytes do not move following content", async ({ page }) => {
     .first()
     .evaluate((image) => image.outerHTML);
 
+  const origin = new URL(page.url()).origin;
+
   let release = () => {};
 
   const ready = new Promise<void>((resolve) => {
@@ -69,10 +71,16 @@ test("delayed image bytes do not move following content", async ({ page }) => {
     await ready;
     await route.continue();
   });
-  await page.setContent(
-    `<style>img {max-width:100%;height:auto}</style><div style="width:320px">${markup}<p id="following">Following content</p></div>`,
-    { waitUntil: "domcontentloaded" }
+  // A fresh same-origin document discards app scripts but can load real images.
+  await page.route(`${origin}/__image-layout-test`, (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: `<style>img {max-width:100%;height:auto}</style><div style="width:320px">${markup}<p id="following">Following content</p></div>`,
+    })
   );
+  await page.goto(`${origin}/__image-layout-test`, {
+    waitUntil: "domcontentloaded",
+  });
 
   const before = await page
     .locator("#following")
