@@ -7,6 +7,8 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  // Its ESM .js files lack package module metadata; Netlify cannot load them directly.
+  ssr: { noExternal: ["react-syntax-highlighter"] },
   server: {
     port: 3000,
   },
