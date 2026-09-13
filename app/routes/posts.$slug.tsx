@@ -1,11 +1,10 @@
 import ReactMarkdown from "react-markdown";
 import type { MetaFunction } from "react-router";
 import { Link, useLoaderData } from "react-router";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { tomorrow } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
 import articleContents from "~/article-contents";
+import MarkdownCodeBlock from "~/code-block";
 import { getPost, type Post } from "~/post";
 import type { Route } from "./+types/posts.$slug";
 
@@ -64,22 +63,7 @@ export default function PostSlug() {
                 }
                 return <img src={transformedSrc} alt={alt} {...props} />;
               },
-              code({ className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || "");
-                return match ? (
-                  <SyntaxHighlighter
-                    style={tomorrow}
-                    language={match[1]}
-                    PreTag="div"
-                  >
-                    {String(children).replace(/\n$/, "")}
-                  </SyntaxHighlighter>
-                ) : (
-                  <code {...props} className={`${className || ""} not-prose`}>
-                    {children}
-                  </code>
-                );
-              },
+              pre: MarkdownCodeBlock,
             }}
           >
             {post.markdown}

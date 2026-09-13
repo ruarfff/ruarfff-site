@@ -11,6 +11,7 @@ import {
 } from "react-router";
 import * as gtag from "~/utils/gtags.client";
 import Header from "./header/header";
+import { themeScript } from "./theme";
 import "./styles/tailwind.css";
 import "./styles/app.css";
 
@@ -50,7 +51,7 @@ export default function App() {
   }, [location, gaTrackingId]);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <Meta />
@@ -58,15 +59,7 @@ export default function App() {
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: required to prevent flash of unstyled content
           dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
-              } catch (_) {}
-            `,
+            __html: themeScript,
           }}
         />
       </head>

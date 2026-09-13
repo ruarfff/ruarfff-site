@@ -129,10 +129,24 @@ co-located images. The Personal index is at `/personal`.
 
 ## Article contents
 
-The site generates a collapsible table of contents from Markdown headings
-(`##` through `######`) when a post has at least two sections. Subheadings
-appear under their parent section. Heading IDs also support direct links.
+The site renders a collapsible table of contents only when the Markdown
+contains a `Contents` or `Table of contents` heading followed by a list.
+It replaces that list in place with links to the post's headings (`##` through
+`######`), with subheadings nested under their parent section.
 
-Existing `Contents` lists and empty HTML heading anchors are handled during
-rendering. The source Markdown stays unchanged for Dev.to publishing. New
-posts need only normal Markdown headings; a manual contents list is optional.
+Posts without an explicit contents list do not get one. All posts still get
+heading IDs for direct links and support empty legacy HTML heading anchors.
+The source Markdown stays unchanged for Dev.to publishing.
+
+## Code examples
+
+Fenced and indented code blocks render with syntax highlighting, a language
+label, and Copy and Wrap lines controls. Lines wrap by default; readers can
+turn wrapping off for aligned output. Copy preserves the original code text
+and line breaks. These controls affect only the site renderer, so Markdown
+and Dev.to publishing stay unchanged.
+
+The Theme menu in the header contains separate Site theme and Code theme
+light/dark toggles. Code theme applies to all code panels. Both preferences
+are saved separately in the browser for future sessions. Code blocks have
+no individual theme settings.

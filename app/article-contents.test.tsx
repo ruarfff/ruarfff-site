@@ -46,7 +46,7 @@ describe("article contents", () => {
 
   it("preserves custom legacy anchors and nests subheadings", () => {
     const { container } = renderArticle(
-      '## New title <a name="old-link"></a>\n\n### Detail\n\n## Last section'
+      '## Contents\n\n- [New title](#old-link)\n\n## New title <a name="old-link"></a>\n\n### Detail\n\n## Last section'
     );
     expect(container.querySelector("h2")?.id).toBe("old-link");
     expect(container.querySelector("h2")?.textContent).toBe("New title");
@@ -68,7 +68,7 @@ describe("article contents", () => {
     expect(container.querySelector("code.language-md")?.textContent).toContain(
       '<a name="example"></a>'
     );
-    expect(container.querySelectorAll("nav a")).toHaveLength(3);
+    expect(container.querySelector("nav")).toBeNull();
   });
 
   it("keeps named anchors distinct from automatic IDs", () => {
@@ -84,7 +84,7 @@ describe("article contents", () => {
 
   it("groups sibling subheadings under their section", () => {
     const { container } = renderArticle(
-      "## First\n\n### One\n\n### Two\n\n#### Detail\n\n## Second"
+      "## Table of contents\n\n1. [First](#first)\n\n## First\n\n### One\n\n### Two\n\n#### Detail\n\n## Second"
     );
     const root = container.querySelector("nav details > ul");
     expect(root?.children).toHaveLength(2);
@@ -101,5 +101,24 @@ describe("article contents", () => {
     );
     expect(container.querySelector("nav")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
+  });
+
+  it("does not add contents to a real post that has not defined one", async () => {
+    const source = await fs.readFile(
+      "posts/local-coding-agent-on-macos/index.md",
+      "utf8"
+    );
+    const { container } = renderArticle(parseFrontMatter(source).body);
+    expect(container.querySelectorAll("h2").length).toBeGreaterThan(1);
+    expect(container.querySelector("nav")).toBeNull();
+    expect(container.querySelector("#selecting-a-model")).not.toBeNull();
+  });
+
+  it("leaves a Contents heading without a list as ordinary article content", () => {
+    const { container } = renderArticle(
+      "## Contents\n\nAn ordinary section.\n\n## Another section"
+    );
+    expect(container.querySelector("nav")).toBeNull();
+    expect(container.querySelector("#contents")?.textContent).toBe("Contents");
   });
 });

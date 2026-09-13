@@ -71,7 +71,7 @@ function contentsList(headings: Element[]): Element {
   return list;
 }
 
-/** Assign heading targets and build their contents in the same render pass. */
+/** Assign heading targets and enhance explicitly authored contents. */
 export default function articleContents() {
   return (tree: Root) => {
     const ids = new Set<string>();
@@ -117,13 +117,13 @@ export default function articleContents() {
       }
     }
 
+    if (insertAt === -1) return;
+
     const headings = tree.children.filter(
       (node): node is Element =>
         node.type === "element" && /^h[2-6]$/.test(node.tagName)
     );
-    if (headings.length < 2 && insertAt === -1) return;
     if (!headings.length) return;
-    if (insertAt === -1) insertAt = tree.children.indexOf(headings[0]);
     tree.children.splice(
       insertAt,
       0,
