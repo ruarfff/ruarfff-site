@@ -53,7 +53,7 @@ function includeDrafts(): boolean {
   return process.env.NODE_ENV === "development";
 }
 
-export async function getPosts(section?: Post["section"]) {
+async function readPosts() {
   const entries = await fs.readdir(postsPath, { withFileTypes: true });
 
   const posts = await Promise.all(
@@ -61,6 +61,32 @@ export async function getPosts(section?: Post["section"]) {
       .filter((entry) => entry.isDirectory())
       .map((entry) => readPost(entry.name))
   );
+
+  return posts;
+}
+
+let productionPosts: Promise<Post[]> | undefined;
+
+function loadPosts() {
+  if (process.env.NODE_ENV !== "production") {
+    productionPosts = undefined;
+
+    return readPosts();
+  }
+
+  productionPosts ??= readPosts().then(
+    (posts) => posts.filter((post) => !post.draft),
+    (error) => {
+      productionPosts = undefined;
+      throw error;
+    }
+  );
+
+  return productionPosts;
+}
+
+export async function getPosts(section?: Post["section"]) {
+  const posts = await loadPosts();
 
   return posts
     .filter(
@@ -75,10 +101,19 @@ export async function getPosts(section?: Post["section"]) {
 }
 
 export async function getPost(slug: string) {
-  let post: Post;
+  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  let post: Post | undefined;
 
   try {
-    post = await readPost(slug);
+    if (process.env.NODE_ENV === "production") {
+      post = (await loadPosts()).find((post) => post.slug === slug);
+    } else {
+      productionPosts = undefined;
+      post = await readPost(slug);
+    }
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "ENOENT") {
       throw new Response("Not Found", { status: 404 });
@@ -87,9 +122,9 @@ export async function getPost(slug: string) {
     throw error;
   }
 
-  if (post.draft && !includeDrafts()) {
+  if (!post || (post.draft && !includeDrafts())) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return post;
+  return { ...post };
 }

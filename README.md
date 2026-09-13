@@ -161,3 +161,20 @@ light/dark toggles. The defaults are a light site and dark code panels.
 Code theme applies to all code panels. Both preferences
 are saved separately in the browser for future sessions. Code blocks have
 no individual theme settings.
+
+## Content caching
+
+Production processes reuse a validated snapshot of published Markdown. Restart
+or deploy after changing content. Development bypasses the snapshot, so edits
+and draft previews remain immediate.
+
+Successful public GET/HEAD pages and loader data use Netlify's durable CDN cache
+for one hour, with two minutes of stale-while-revalidate. Browsers revalidate
+on each visit. Normal Netlify deploy invalidation remains enabled; no custom
+cache IDs are used. Health checks, errors, responses that set cookies, and
+local development do not receive this public cache policy. Framework query and
+Vary behavior remains unchanged.
+
+After `npm run build`, run `node --test e2e/production-*.test.mjs` for production
+artifact, handler and header checks. These local checks do not prove a Netlify
+cache hit or deploy invalidation; verify those on an authorized preview.

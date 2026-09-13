@@ -101,6 +101,8 @@ describe("post loading", () => {
   });
 
   it("preserves unexpected filesystem failures", async () => {
+    await addPost("unreadable");
+
     const error = Object.assign(new Error("Permission denied"), {
       code: "EACCES",
     });
@@ -117,6 +119,9 @@ describe("post loading", () => {
 
   it("distinguishes an empty collection from a missing directory", async () => {
     expect(await getPosts()).toEqual([]);
+  });
+
+  it("reports a missing content directory", async () => {
     await fs.rm(path.join(directory, "posts"), { recursive: true });
     await expect(getPosts()).rejects.toMatchObject({ code: "ENOENT" });
   });
@@ -146,5 +151,41 @@ describe("post loading", () => {
     const message = new RegExp(`invalid.*${field}`);
     await expect(getPost("invalid")).rejects.toThrow(message);
     await expect(getPosts()).rejects.toThrow(message);
+  });
+});
+
+describe("content snapshots", () => {
+  it("reuses production content across indexes and details", async () => {
+    await addPost("tech");
+    const posts = await getPosts();
+    await fs.rm(path.join(directory, "posts"), { recursive: true });
+    expect(await getPosts()).toEqual(posts);
+    expect(await getPost("tech")).toMatchObject({ title: "Example" });
+  });
+
+  it("recovers when initialization fails", async () => {
+    await addPost("tech", "draft: invalid\n");
+    await expect(getPosts()).rejects.toThrow("invalid draft");
+    await fs.writeFile(
+      path.join(directory, "posts/tech/index.md"),
+      "---\ntitle: Fixed\ndate: 2026-09-13\n---\nBody"
+    );
+    expect(await getPosts()).toHaveLength(1);
+  });
+
+  it("reads development edits and new drafts without leaking them into production", async () => {
+    await addPost("tech");
+    await getPosts();
+    vi.stubEnv("NODE_ENV", "development");
+    await addPost("draft", "draft: true\n");
+    await fs.writeFile(
+      path.join(directory, "posts/tech/index.md"),
+      "---\ntitle: Edited\ndate: 2026-09-13\n---\nBody"
+    );
+    expect(await getPosts()).toHaveLength(2);
+    expect(await getPost("tech")).toMatchObject({ title: "Edited" });
+    vi.stubEnv("NODE_ENV", "production");
+    expect(await getPosts()).toHaveLength(1);
+    await expect(getPost("draft")).rejects.toMatchObject({ status: 404 });
   });
 });

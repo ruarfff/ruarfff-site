@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { MetaFunction } from "react-router";
+import type { MetaFunction, MiddlewareFunction } from "react-router";
 import {
   Links,
   Meta,
@@ -13,6 +13,33 @@ import * as gtag from "~/utils/gtags.client";
 import Header from "./header/header";
 import { themeScript } from "./theme";
 import "./styles/app.css";
+
+export const middleware: MiddlewareFunction<Response>[] = [
+  async ({ request }, next) => {
+    const response = await next();
+    const pathname = new URL(request.url).pathname;
+
+    if (
+      process.env.NODE_ENV === "production" &&
+      (request.method === "GET" || request.method === "HEAD") &&
+      response.status === 200 &&
+      pathname !== "/healthcheck" &&
+      pathname !== "/healthcheck.data" &&
+      !response.headers.has("Set-Cookie")
+    ) {
+      response.headers.set(
+        "Cache-Control",
+        "public, max-age=0, must-revalidate"
+      );
+      response.headers.set(
+        "Netlify-CDN-Cache-Control",
+        "public, durable, max-age=3600, stale-while-revalidate=120"
+      );
+    }
+
+    return response;
+  },
+];
 
 export const loader = async () => {
   return { gaTrackingId: "G-J8S0YBL54N" };
