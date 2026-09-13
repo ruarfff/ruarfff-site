@@ -20,7 +20,7 @@ export const middleware: MiddlewareFunction<Response>[] = [
     const pathname = new URL(request.url).pathname;
 
     if (
-      process.env.NODE_ENV === "production" &&
+      (process.env.NODE_ENV ?? "production") === "production" &&
       (request.method === "GET" || request.method === "HEAD") &&
       response.status === 200 &&
       pathname !== "/healthcheck" &&

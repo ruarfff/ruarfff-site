@@ -69,7 +69,7 @@ async function readPosts() {
 let productionPosts: Promise<Post[]> | undefined;
 
 function loadPosts() {
-  if (process.env.NODE_ENV !== "production") {
+  if ((process.env.NODE_ENV ?? "production") !== "production") {
     productionPosts = undefined;
 
     return readPosts();
@@ -109,7 +109,7 @@ export async function getPost(slug: string) {
   let post: Post | undefined;
 
   try {
-    if (process.env.NODE_ENV === "production") {
+    if ((process.env.NODE_ENV ?? "production") === "production") {
       post = (await loadPosts()).find((post) => post.slug === slug);
     } else {
       productionPosts = undefined;

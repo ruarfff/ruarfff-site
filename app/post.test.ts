@@ -155,7 +155,11 @@ describe("post loading", () => {
 });
 
 describe("content snapshots", () => {
-  it("reuses production content across indexes and details", async () => {
+  it.each([
+    "production",
+    undefined,
+  ])("reuses content across indexes and details with NODE_ENV=%s", async (mode) => {
+    vi.stubEnv("NODE_ENV", mode);
     await addPost("tech");
     const posts = await getPosts();
     await fs.rm(path.join(directory, "posts"), { recursive: true });

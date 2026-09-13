@@ -26,6 +26,8 @@ test("the generated function starts without automatic module syntax detection", 
        for (const pathname of ["/", "/personal", "/posts/angular-and-redux"]) {
          const response = await handler(new Request("http://site.test" + pathname), {});
          assert.equal(response.status, 200, pathname);
+         assert.equal(response.headers.get("cache-control"), "public, max-age=0, must-revalidate", pathname);
+         assert.equal(response.headers.get("netlify-cdn-cache-control"), "public, durable, max-age=3600, stale-while-revalidate=120", pathname);
          const body = await response.text();
          for (const match of body.matchAll(new RegExp('(?:src|href)="(/assets/[^"]+)"', "g"))) {
            assert.ok((await fs.stat(path.join("build/client", match[1].slice(1)))).isFile(), match[1]);
@@ -37,7 +39,7 @@ test("the generated function starts without automatic module syntax detection", 
        }`,
     ], {
       cwd: process.cwd(),
-      env: { PATH: process.env.PATH, NODE_ENV: "production" },
+      env: { PATH: process.env.PATH },
       encoding: "utf8", timeout: 15000,
     });
 
