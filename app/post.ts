@@ -25,6 +25,10 @@ const postMetadata = z.object({
 });
 
 async function readPost(slug: string): Promise<Post> {
+  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
   const filepath = path.join(postsPath, slug, "index.md");
   const source = await fs.readFile(filepath, "utf8");
   const { frontmatter, body } = parseFrontMatter(source);

@@ -78,6 +78,24 @@ describe("post loading", () => {
     expect(await getPost("draft")).toMatchObject({ draft: true, section });
   });
 
+  it.each([
+    "../outside",
+    "..",
+    ".",
+    "",
+    "a/b",
+    "a\\b",
+    "/outside",
+    "C:\\outside",
+    "%2e%2e%2foutside",
+    "%252e%252e%252foutside",
+    "%zz",
+    "bad\0slug",
+  ])("rejects unsafe slug %j", async (slug) => {
+    await addPost("../outside");
+    await expect(getPost(slug)).rejects.toMatchObject({ status: 404 });
+  });
+
   it("returns not found for an absent article", async () => {
     await expect(getPost("absent")).rejects.toMatchObject({ status: 404 });
   });
