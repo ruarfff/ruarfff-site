@@ -6,7 +6,7 @@ import path from "node:path";
 import { test } from "node:test";
 import express from "express";
 
-test("published image output contains the source bytes and serves images", async () => {
+test("published images and client assets serve the expected MIME type and bytes", async () => {
   const images = [];
 
   for (const entry of await fs.readdir("posts", { withFileTypes: true })) {
@@ -35,11 +35,18 @@ test("published image output contains the source bytes and serves images", async
   await once(server, "listening");
 
   try {
-    for (const file of [...images, "profile-pic.jpg", "icon.png"]) {
-      const response = await fetch(`http://127.0.0.1:${server.address().port}/images/${file}`);
+    const files = [...images, "profile-pic.jpg", "icon.png"].map((file) => `images/${file}`);
+
+    for (const file of await fs.readdir("build/client/assets")) {
+      if (/\.(js|css)$/.test(file)) files.push(`assets/${file}`);
+    }
+
+    for (const file of files) {
+      const response = await fetch(`http://127.0.0.1:${server.address().port}/${file}`);
       assert.equal(response.status, 200);
-      assert.match(response.headers.get("content-type"), /^image\//);
-      assert.deepEqual(Buffer.from(await response.arrayBuffer()), await fs.readFile(path.join("build/client/images", file)));
+      const mime = file.endsWith(".css") ? /^text\/css/ : file.endsWith(".js") ? /^(text|application)\/javascript/ : /^image\//;
+      assert.match(response.headers.get("content-type"), mime);
+      assert.deepEqual(Buffer.from(await response.arrayBuffer()), await fs.readFile(path.join("build/client", file)));
     }
   } finally {
     server.closeAllConnections();
