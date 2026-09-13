@@ -24,8 +24,12 @@ export default function About() {
         />
         <div>
           <h2>Ruairí O'Brien</h2>
-          <p>Principal Software Engineer at CH Robinson</p>
+          <p>I'm working as a Principal Software Engineer.</p>
           <p className="profile-location">Minneapolis, United States.</p>
+          <p className="text-sm">
+            The views expressed here are my own and do not represent those of my
+            employer.
+          </p>
           <ul aria-label="Social profiles" className="social-profiles">
             <li>
               <a href="https://github.com/ruarfff/">
