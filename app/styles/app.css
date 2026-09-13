@@ -227,6 +227,30 @@
 .profile-location {
   color: #4b5563;
 }
+.social-profiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.social-profiles a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+.social-profiles a:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+.social-profiles svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
 a {
   text-underline-offset: 0.2em;
 }

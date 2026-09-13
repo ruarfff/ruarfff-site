@@ -44,8 +44,6 @@ Technical articles are commonly shared with peers or discovered by a technical a
 
 - Existing technical articles are stored under `posts/` with title, date, and optional description metadata.
 - Existing professional profile content, social links, and a portrait are available in `app/routes/about.tsx`, `PRODUCT.md`, and `public/images/profile-pic.jpg`.
-- Unpublished personal writing exists outside the current repository; no personal article content or supporting imagery is currently available in the project.
-- Future design work must not invent readership claims, credentials, or personal stories.
 
 ## Product Principles
 
