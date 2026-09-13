@@ -7,6 +7,8 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  // Static-copy reads this even when React Router builds separate environments.
+  build: { outDir: "build/client" },
   // Its ESM .js files lack package module metadata; Netlify cannot load them directly.
   ssr: { noExternal: ["react-syntax-highlighter"] },
   server: {
