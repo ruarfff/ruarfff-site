@@ -5,11 +5,24 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import parseFrontMatter from "front-matter";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 const script = fileURLToPath(new URL("./publish-to-devto.ts", import.meta.url));
 
 let directory: string;
+
+beforeAll(async () => {
+  // Build real image metadata before timing the publishing round trips.
+  await import("../app/post");
+});
 
 beforeEach(async () => {
   directory = await fs.mkdtemp(path.join(os.tmpdir(), "devto-publisher-test-"));
