@@ -9,4 +9,5 @@ check:
 	npm run check
 	npm run typecheck
 	npm test -- --run
+	npm run test:production
 	npx playwright test

@@ -45,6 +45,16 @@ Deployed to [Netlify](https://www.netlify.com/).
 
 ### Netlify Setup
 
+Netlify runs `npm run test:production` before publishing a deployment. This
+builds the site and checks that the generated function starts without automatic
+module syntax detection and serves the home, personal, and highlighted article
+pages. It also checks that referenced scripts/styles exist and that published
+images and client assets return the expected MIME type and bytes.
+
+A failed check stops the deployment. Run the same command locally, or use
+`make check` to include it with the other checks. These tests cover the build
+artifacts; they do not replace live checks of Netlify routing or CDN behavior.
+
 1. Install the [Netlify CLI](https://www.netlify.com/products/dev/):
 
 ```sh

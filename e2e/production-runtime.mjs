@@ -20,11 +20,16 @@ test("the generated function starts without automatic module syntax detection", 
     const result = spawnSync(process.execPath, [
       "--no-experimental-detect-module", "--input-type=module", "--eval",
       `import assert from "node:assert/strict";
+       import fs from "node:fs/promises";
+       import path from "node:path";
        import handler from ${JSON.stringify(pathToFileURL(handler).href)};
        for (const pathname of ["/", "/personal", "/posts/angular-and-redux"]) {
          const response = await handler(new Request("http://site.test" + pathname), {});
          assert.equal(response.status, 200, pathname);
          const body = await response.text();
+         for (const match of body.matchAll(new RegExp('(?:src|href)="(/assets/[^"]+)"', "g"))) {
+           assert.ok((await fs.stat(path.join("build/client", match[1].slice(1)))).isFile(), match[1]);
+         }
          if (pathname.startsWith("/posts/")) {
            assert.ok(body.includes("code-example"));
            assert.ok(body.includes("token keyword"));
