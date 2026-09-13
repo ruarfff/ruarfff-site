@@ -51,6 +51,9 @@ module syntax detection and serves the home, personal, and highlighted article
 pages. It also checks that referenced scripts/styles exist and that published
 images and client assets return the expected MIME type and bytes.
 
+The same gate checks published routes, draft exclusion, unsafe article paths,
+health-check isolation, and cache policies on successful and failed responses.
+
 A failed check stops the deployment. Run the same command locally, or use
 `make check` to include it with the other checks. These tests cover the build
 artifacts; they do not replace live checks of Netlify routing or CDN behavior.

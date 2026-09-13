@@ -14,7 +14,7 @@
     "check:fix": "biome check --write . && oxlint --fix",
     "start": "react-router-serve ./build/server/index.js",
     "test": "vitest",
-    "test:production": "npm run build && node --test e2e/production-runtime.mjs e2e/production-images.mjs",
+    "test:production": "npm run build && node --test e2e/production-*.mjs",
     "typecheck": "react-router typegen && tsc -b",
     "publish-to-devto": "node --experimental-strip-types scripts/publish-to-devto.ts"
   },
