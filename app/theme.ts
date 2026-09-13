@@ -11,9 +11,9 @@ export const themeScript = `
       siteTheme = localStorage.getItem('theme');
       codeTheme = localStorage.getItem('code-theme');
     } catch (_) {}
-    const dark = siteTheme === 'dark' || (siteTheme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const dark = siteTheme === 'dark';
     document.documentElement.classList.toggle('dark', dark);
-    const resolvedCodeTheme = codeTheme === 'light' || codeTheme === 'dark' ? codeTheme : dark ? 'dark' : 'light';
+    const resolvedCodeTheme = codeTheme === 'light' || codeTheme === 'dark' ? codeTheme : 'dark';
     document.documentElement.dataset.codeTheme = resolvedCodeTheme;
     try { localStorage.setItem('code-theme', resolvedCodeTheme); } catch (_) {}
   })();
@@ -55,9 +55,9 @@ export function useCodeTheme(): CodeTheme {
     subscribe,
     () => {
       const value = document.documentElement.dataset.codeTheme;
-      return value === "dark" ? "dark" : "light";
+      return value === "light" ? "light" : "dark";
     },
-    () => "light"
+    () => "dark"
   );
 }
 

@@ -54,6 +54,7 @@ describe("site and code themes", () => {
   });
 
   it("shares a code preference without changing the page theme", async () => {
+    document.documentElement.dataset.codeTheme = "light";
     renderHeader();
     const { container } = render(
       <ReactMarkdown components={{ pre: MarkdownCodeBlock }}>
@@ -105,7 +106,22 @@ describe("site and code themes", () => {
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
   });
 
-  it("follows the system preference when storage is unavailable and still toggles", async () => {
+  it.each([
+    false,
+    true,
+  ])("defaults to light site and dark code when system dark mode is %s", (systemDark) => {
+    vi.stubGlobal("matchMedia", () => ({ matches: systemDark }));
+    new Function(themeScript)();
+    expect(document.documentElement).not.toHaveClass("dark");
+    expect(document.documentElement.dataset.codeTheme).toBe("dark");
+    renderHeader();
+    expect(
+      screen.getByRole("switch", { name: "Site theme" })
+    ).not.toBeChecked();
+    expect(screen.getByRole("switch", { name: "Code theme" })).toBeChecked();
+  });
+
+  it("uses light site and dark code defaults when storage is unavailable and still toggles", async () => {
     vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("Storage blocked");
     });
@@ -114,14 +130,12 @@ describe("site and code themes", () => {
     });
     vi.stubGlobal("matchMedia", () => ({ matches: true }));
     new Function(themeScript)();
-    expect(document.documentElement).toHaveClass("dark");
+    expect(document.documentElement).not.toHaveClass("dark");
     expect(document.documentElement.dataset.codeTheme).toBe("dark");
     renderHeader();
     await act(async () => {
       fireEvent.click(screen.getByRole("switch", { name: "Site theme" }));
     });
-    await waitFor(() =>
-      expect(document.documentElement).not.toHaveClass("dark")
-    );
+    await waitFor(() => expect(document.documentElement).toHaveClass("dark"));
   });
 });

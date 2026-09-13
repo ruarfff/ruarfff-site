@@ -147,6 +147,7 @@ and line breaks. These controls affect only the site renderer, so Markdown
 and Dev.to publishing stay unchanged.
 
 The Theme menu in the header contains separate Site theme and Code theme
-light/dark toggles. Code theme applies to all code panels. Both preferences
+light/dark toggles. The defaults are a light site and dark code panels.
+Code theme applies to all code panels. Both preferences
 are saved separately in the browser for future sessions. Code blocks have
 no individual theme settings.
