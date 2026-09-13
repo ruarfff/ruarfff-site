@@ -1,5 +1,27 @@
 import { expect, test } from "@playwright/test";
 
+for (const route of ["/", "/personal", "/about", "/posts/angular-and-redux"]) {
+  test(`viewport metadata survives route metadata on ${route}`, async ({
+    page,
+    request,
+  }) => {
+    const response = await request.get(route);
+    expect(response.ok()).toBe(true);
+    const html = await response.text();
+    expect(html.match(/<meta\b[^>]*name="viewport"[^>]*>/g) ?? []).toHaveLength(
+      1
+    );
+    await page.goto(route);
+    await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
+      "content",
+      "width=device-width,initial-scale=1"
+    );
+    expect(await page.evaluate(() => window.innerWidth)).toBe(
+      page.viewportSize()?.width
+    );
+  });
+}
+
 test.describe("Mobile Responsiveness", () => {
   test("blog list page has no horizontal scroll", async ({ page }) => {
     await page.goto("/");
@@ -15,7 +37,7 @@ test.describe("Mobile Responsiveness", () => {
 
     const heading = page.locator("h1");
     await expect(heading).toBeVisible();
-    await expect(heading).toHaveText("Blog Posts");
+    await expect(heading).toHaveText("Tech blog");
   });
 
   test("blog post titles are readable size", async ({ page }) => {
@@ -70,27 +92,43 @@ test.describe("Mobile Responsiveness", () => {
     await expect(page).toHaveURL(/\/posts\/angular-and-redux$/);
   });
 
-  test("dark mode toggles theme class on html", async ({ page }) => {
+  test("site and code themes are independent and persist across navigation", async ({
+    page,
+  }) => {
     await page.goto("/about");
-    const htmlElement = page.locator("html");
-    const button = page.locator("button.js-change-theme");
-    await expect(button).toBeVisible();
-
-    const initialIsDark = await htmlElement.evaluate((el) =>
-      el.classList.contains("dark")
+    await page.locator("summary").filter({ hasText: "Theme" }).click();
+    const site = page.getByRole("switch", { name: "Site theme" });
+    const code = page.getByRole("switch", { name: "Code theme" });
+    const html = page.locator("html");
+    await expect(site).toHaveAttribute("aria-checked", "false");
+    await expect(code).toHaveAttribute("aria-checked", "true");
+    await site.click();
+    await expect(html).toHaveClass(/dark/);
+    await expect(code).toHaveAttribute("aria-checked", "true");
+    await code.click();
+    await expect(html).toHaveAttribute("data-code-theme", "light");
+    await expect(site).toHaveAttribute("aria-checked", "true");
+    await page.reload();
+    await expect(html).toHaveClass(/dark/);
+    await expect(html).toHaveAttribute("data-code-theme", "light");
+    const navigation = page.getByRole("navigation", {
+      name: "Main navigation",
+    });
+    await navigation
+      .getByRole("link", { name: "Personal", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/personal$/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Personal"
     );
-
-    await button.click();
-    const afterClickIsDark = await htmlElement.evaluate((el) =>
-      el.classList.contains("dark")
+    await navigation
+      .getByRole("link", { name: "Tech blog", exact: true })
+      .click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Tech blog"
     );
-    expect(afterClickIsDark).toBe(!initialIsDark);
-
-    await button.click();
-    const afterSecondClickIsDark = await htmlElement.evaluate((el) =>
-      el.classList.contains("dark")
-    );
-    expect(afterSecondClickIsDark).toBe(initialIsDark);
+    await expect(html).toHaveClass(/dark/);
+    await expect(html).toHaveAttribute("data-code-theme", "light");
   });
 
   test("blog post headings have id attributes for anchor links", async ({

@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import parseFrontMatter from "front-matter";
+import yaml from "js-yaml";
 import invariant from "tiny-invariant";
 
 export type Post = {
@@ -13,35 +14,48 @@ export type Post = {
   section: "tech" | "personal";
 };
 
-export type PostMarkdownAttributes = {
-  title: string;
-  date: string;
-  description?: string;
-  draft?: boolean;
-  section?: "tech" | "personal";
-};
-
 const postsPath = path.resolve("posts");
 
-function isValidPostAttributes(
-  attributes: unknown
-): attributes is PostMarkdownAttributes {
-  return (
-    typeof attributes === "object" &&
-    attributes !== null &&
-    "title" in attributes
+async function readPost(slug: string): Promise<Post> {
+  const filepath = path.join(postsPath, slug, "index.md");
+  const source = await fs.readFile(filepath, "utf8");
+  const { frontmatter, body } = parseFrontMatter(source);
+  // Preserve date scalars: YAML timestamp parsing can normalize invalid dates.
+  const attributes = yaml.safeLoad(frontmatter ?? "", {
+    schema: yaml.JSON_SCHEMA,
+  });
+  invariant(
+    attributes && typeof attributes === "object",
+    `${filepath}: invalid metadata`
   );
-}
-
-function formatDate(date: unknown): string {
-  if (date instanceof Date) {
-    return date.toISOString().split("T")[0];
-  }
-  return String(date || "");
-}
-
-function isDraft(attributes: PostMarkdownAttributes): boolean {
-  return attributes.draft === true;
+  const {
+    title,
+    date,
+    description,
+    draft = false,
+    section = "tech",
+  } = attributes as Record<string, unknown>;
+  invariant(
+    typeof title === "string" && title.trim(),
+    `${filepath}: invalid title`
+  );
+  invariant(
+    typeof date === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(date) &&
+      !Number.isNaN(Date.parse(date)) &&
+      new Date(date).toISOString().slice(0, 10) === date,
+    `${filepath}: invalid date`
+  );
+  invariant(
+    description === undefined || typeof description === "string",
+    `${filepath}: invalid description`
+  );
+  invariant(typeof draft === "boolean", `${filepath}: invalid draft`);
+  invariant(
+    section === "tech" || section === "personal",
+    `${filepath}: invalid section`
+  );
+  return { slug, title, date, description, draft, section, markdown: body };
 }
 
 function includeDrafts(): boolean {
@@ -49,64 +63,33 @@ function includeDrafts(): boolean {
 }
 
 export async function getPosts(section?: Post["section"]) {
-  try {
-    const dir = await fs.readdir(postsPath);
-    const posts = await Promise.all(
-      dir.map(async (filename) => {
-        const file = await fs.readFile(
-          path.join(postsPath, filename, "index.md")
-        );
-        const { attributes } = parseFrontMatter(file.toString());
-        invariant(
-          isValidPostAttributes(attributes),
-          `${filename} has bad meta data!`
-        );
-        return {
-          slug: `/posts/${filename.replace(/\.md$/, "")}`,
-          title: attributes.title,
-          description: attributes.description,
-          date: formatDate(attributes.date),
-          draft: isDraft(attributes),
-          section:
-            attributes.section === "personal"
-              ? ("personal" as const)
-              : ("tech" as const),
-        };
-      })
-    );
-    return posts.filter(
+  const entries = await fs.readdir(postsPath, { withFileTypes: true });
+  const posts = await Promise.all(
+    entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => readPost(entry.name))
+  );
+  return posts
+    .filter(
       (post) =>
         (includeDrafts() || !post.draft) &&
         (!section || post.section === section)
-    );
-  } catch (e) {
-    console.log(e);
-    return Promise.resolve([]);
-  }
+    )
+    .map(({ markdown: _markdown, ...post }) => ({
+      ...post,
+      slug: `/posts/${post.slug}`,
+    }));
 }
 
 export async function getPost(slug: string) {
-  const filepath = path.join(postsPath, slug, "index.md");
-  const file = await fs.readFile(filepath);
-  const { attributes, body } = parseFrontMatter(file.toString());
-  invariant(
-    isValidPostAttributes(attributes),
-    `Post ${filepath} is missing attributes`
-  );
-  const draft = isDraft(attributes);
-  if (draft && !includeDrafts()) {
+  const post = await readPost(slug).catch((error: unknown) => {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+      throw new Response("Not Found", { status: 404 });
+    }
+    throw error;
+  });
+  if (post.draft && !includeDrafts()) {
     throw new Response("Not Found", { status: 404 });
   }
-  return {
-    slug,
-    markdown: body,
-    title: attributes.title,
-    description: attributes.description,
-    date: formatDate(attributes.date),
-    draft,
-    section:
-      attributes.section === "personal"
-        ? ("personal" as const)
-        : ("tech" as const),
-  };
+  return post;
 }

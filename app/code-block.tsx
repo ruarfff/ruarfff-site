@@ -1,6 +1,38 @@
 import { type ComponentProps, useEffect, useState } from "react";
 import type { ExtraProps } from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
+import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import docker from "react-syntax-highlighter/dist/esm/languages/prism/docker";
+import ini from "react-syntax-highlighter/dist/esm/languages/prism/ini";
+import java from "react-syntax-highlighter/dist/esm/languages/prism/java";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import json from "react-syntax-highlighter/dist/esm/languages/prism/json";
+import markdown from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
+import markup from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import nix from "react-syntax-highlighter/dist/esm/languages/prism/nix";
+import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
+import toml from "react-syntax-highlighter/dist/esm/languages/prism/toml";
+import yaml from "react-syntax-highlighter/dist/esm/languages/prism/yaml";
+
+// Keep the shipped grammars aligned with the languages used in posts.
+for (const [name, grammar] of Object.entries({
+  bash,
+  css,
+  docker,
+  ini,
+  java,
+  javascript,
+  json,
+  markdown,
+  markup,
+  nix,
+  python,
+  toml,
+  yaml,
+})) {
+  SyntaxHighlighter.registerLanguage(name, grammar);
+}
 
 function CodeBlock({ code, language }: { code: string; language: string }) {
   const [wrap, setWrap] = useState(true);

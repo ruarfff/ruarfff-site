@@ -1,7 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import readline from "node:readline";
+import { parseEnv } from "node:util";
 import parseFrontMatter from "front-matter";
+import yaml from "js-yaml";
 
 interface PostAttributes {
   title: string;
@@ -27,20 +29,7 @@ async function loadEnv() {
   try {
     const envPath = path.resolve(".env");
     const content = await fs.readFile(envPath, "utf-8");
-    for (const line of content.split("\n")) {
-      const match = line.trim().match(/^([^=]+)=(.*)$/);
-      if (match) {
-        const key = match[1].trim();
-        let val = match[2].trim();
-        if (
-          (val.startsWith('"') && val.endsWith('"')) ||
-          (val.startsWith("'") && val.endsWith("'"))
-        ) {
-          val = val.slice(1, -1);
-        }
-        process.env[key] = val;
-      }
-    }
+    Object.assign(process.env, parseEnv(content));
   } catch (_err) {
     // Ignore error if .env doesn't exist
   }
@@ -86,47 +75,6 @@ function ask(query: string): Promise<string> {
       resolve(ans);
     })
   );
-}
-
-// Simple YAML stringifier
-function stringifyYAML(obj: Record<string, unknown>): string {
-  let yaml = "---\n";
-  for (const [key, value] of Object.entries(obj)) {
-    if (value === undefined || value === null) continue;
-    if (Array.isArray(value)) {
-      yaml += `${key}:\n`;
-      for (const item of value) {
-        yaml += `  - ${item}\n`;
-      }
-    } else if (typeof value === "object" && !(value instanceof Date)) {
-      yaml += `${key}:\n`;
-      const nested = Object.entries(value)
-        .map(([k, v]) => `  ${k}: ${JSON.stringify(v)}`)
-        .join("\n");
-      yaml += `${nested}\n`;
-    } else {
-      let valStr = "";
-      if (value instanceof Date) {
-        valStr = value.toISOString().split("T")[0];
-      } else if (typeof value === "string") {
-        const needsQuotes =
-          /[:#\-,[\]{}&*!|>'"%@`\x60]|^[ \t]|[ \t]$/.test(value) ||
-          value.includes("\n");
-        if (value.includes("\n")) {
-          valStr = `|-\n  ${value.replace(/\n/g, "\n  ")}`;
-        } else if (needsQuotes) {
-          valStr = JSON.stringify(value);
-        } else {
-          valStr = value;
-        }
-      } else {
-        valStr = String(value);
-      }
-      yaml += `${key}: ${valStr}\n`;
-    }
-  }
-  yaml += "---\n";
-  return yaml;
 }
 
 // Rewrite relative image paths to absolute production paths
@@ -358,9 +306,7 @@ async function run() {
           console.log(
             `\x1b[32m✔ Found matching article on Dev.to with correct ID: ${matchingArticle.id}.\x1b[0m`
           );
-          console.log("Updating local frontmatter and retrying...");
-          attributes.devto_id = matchingArticle.id;
-          attributes.devto_url = matchingArticle.url;
+          console.log("Retrying with the corrected article ID...");
           const retryUrl = `https://dev.to/api/articles/${matchingArticle.id}`;
           response = await fetch(retryUrl, {
             method: "PUT",
@@ -402,7 +348,7 @@ async function run() {
         devto_url: result.url,
       } as Record<string, unknown>;
 
-      const newContent = stringifyYAML(updatedAttributes) + body;
+      const newContent = `---\n${yaml.safeDump(updatedAttributes)}---\n${body}`;
       await fs.writeFile(filePath, newContent, "utf-8");
       console.log(`\x1b[32m✔ Updated frontmatter in ${filePath}\x1b[0m`);
     }

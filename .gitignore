@@ -2,13 +2,13 @@ node_modules
 
 /.cache
 /build
+/dist/
 /public/build
 /.env
 /.react-router
 # Local Netlify folder
 .netlify
 
-/app/styles/tailwind.css
 
 /.vscode
 .vscode/launch.json

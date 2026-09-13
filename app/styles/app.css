@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Shared structure for the publication and its sections. */
 .site-width {
   width: min(100% - 2rem, 54rem);

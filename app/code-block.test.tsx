@@ -14,6 +14,27 @@ function renderExample(markdown: string) {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("code examples", () => {
+  it.each([
+    ["bash", 'echo "hello"'],
+    ["shell", 'echo "hello"'],
+    ["python", "def example(): return True"],
+    ["javascript", "const count = 1;"],
+    ["yaml", "enabled: true"],
+    ["html", "<p>Example</p>"],
+    ["json", '{"enabled":true}'],
+    ["toml", "enabled = true"],
+    ["ini", "[section]\nenabled=true"],
+    ["docker", "FROM node:22"],
+    ["markdown", "# Heading"],
+    ["java", "public class Example {}"],
+    ["css", "p { color: red; }"],
+    ["nix", "{ enabled = true; }"],
+  ])("highlights the post language %s", (language, code) => {
+    const { container } = renderExample(`\`\`\`${language}\n${code}\n\`\`\``);
+    expect(container.querySelector(".token")).not.toBeNull();
+    expect(container.querySelector("pre code")?.textContent).toBe(`${code}\n`);
+  });
+
   it("renders highlighted code in one pre, preserving whitespace", () => {
     const code =
       'const url = "https://example.com/a/very/long/path";\n\tconsole.log(url);\n';

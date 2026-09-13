@@ -1,10 +1,15 @@
 # AGENTS.md
 
-This is my personal website and blog. It is built using React Router v7 and deployed on Netlify with serverless functions.
+This is my personal website and blog. It uses React Router and is deployed on Netlify with serverless functions.
+
+## Coding standards
+
+Before writing, changing, or reviewing code, read and follow
+[CODING_STANDARDS.md](CODING_STANDARDS.md).
 
 ## Development Commands
 
-- **Development server**: `npm run dev` - Starts React Router v7 dev server (localhost:5173)
+- **Development server**: `npm run dev` - Starts the dev server; see `vite.config.ts` for the port
 - **Build**: `npm run build` - Builds production bundle for Netlify deployment
 - **Test**: `npm test` - Runs Vitest test suite
 - **Lint**: `npm run lint` - Runs Biome linting
@@ -16,7 +21,7 @@ This is my personal website and blog. It is built using React Router v7 and depl
 
 ## Architecture Overview
 
-This is a React Router v7 personal blog deployed on Netlify (migrated from Remix).
+This is a React Router personal blog deployed on Netlify.
 
 ### Key Architecture Patterns
 
@@ -33,8 +38,8 @@ This is a React Router v7 personal blog deployed on Netlify (migrated from Remix
 
 **Route Structure**:
 - Explicit route configuration in `app/routes.ts`
-- Individual post routes like `angular-and-redux.tsx` map to `/posts/[slug]/index.md` files
-- Posts are also accessible via `posts.$slug.tsx` dynamic route
+- Legacy article URLs use `legacy-redirect.tsx` to redirect to `/posts/[slug]`
+- `posts.$slug.tsx` renders posts from `/posts/[slug]/index.md`
 
 **Content Rendering**: Uses `react-markdown` with `react-syntax-highlighter` and `remark-gfm` for GitHub Flavored Markdown support.
 
@@ -42,17 +47,16 @@ This is a React Router v7 personal blog deployed on Netlify (migrated from Remix
 
 - `app/post.ts` - Core blog post reading and parsing logic
 - `posts/` - Markdown blog posts organized by slug directories
-- `app/routes.ts` - Explicit route configuration for React Router v7
+- `app/routes.ts` - Explicit route configuration
 - `app/routes/posts.$slug.tsx` - Dynamic post rendering route
 - `app/root.tsx` - Root layout with Google Analytics integration
 - `vite.config.ts` - Vite configuration with React Router and Netlify plugins
-- `server.js` - Netlify Functions handler using @react-router/node
 
 ### Deployment
 
 - **Platform**: Netlify with Functions
 - **Build configuration**: Uses `@netlify/vite-plugin-react-router` for deployment
-- **Server**: Netlify Functions handler in `server.js`
+- **Server**: The Netlify plugin generates the Functions handler during the build
 
 ### Testing
 
@@ -64,6 +68,5 @@ This is a React Router v7 personal blog deployed on Netlify (migrated from Remix
 
 - **CSS Framework**: Tailwind CSS with custom app.css
 - **Typography**: @tailwindcss/typography plugin for blog content
-- **Fonts**: Poppins font family from Google Fonts
-- **CSS Import**: CSS files imported directly (React Router v7 inlines critical CSS automatically)
-
+- **Fonts**: System monospace fonts
+- **CSS Import**: The root imports `app/styles/app.css`; Vite processes its Tailwind directives

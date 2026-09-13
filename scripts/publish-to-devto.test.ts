@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import parseFrontMatter from "front-matter";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 const script = fileURLToPath(new URL("./publish-to-devto.ts", import.meta.url));
@@ -21,6 +22,97 @@ globalThis.fetch = async (url, options) => {
   return new Response(JSON.stringify({ id: 123, url: "https://dev.to/example/tech" }), { status: 200 });
 };`
   );
+});
+
+describe("publishing metadata", () => {
+  it("loads quoted dotenv values and comments with file-over-shell precedence", async () => {
+    await addPost("tech");
+    await fs.writeFile(
+      path.join(directory, ".env"),
+      `# Synthetic test configuration only
+DEVTO_API_KEY="test-only-file-key" # inline comment
+CANONICAL_HOST='https://fixture.example' # inline comment
+`
+    );
+    await fs.writeFile(
+      path.join(directory, "mock-fetch.mjs"),
+      `
+globalThis.fetch = async (_url, options) => {
+  const body = JSON.parse(options.body);
+  const valid = options.headers["api-key"] === "test-only-file-key" && body.article.canonical_url === "https://fixture.example/posts/tech";
+  return Response.json({id:123,url:"https://dev.to/example/tech"}, {status:valid ? 200 : 400});
+};`
+    );
+    const result = publish("tech");
+    expect(result.status, result.output).toBe(0);
+  });
+
+  it("preserves YAML values and the article body when adding publishing metadata", async () => {
+    await addPost("tech");
+    const filename = path.join(directory, "posts/tech/index.md");
+    const source = `---
+title: "true"
+date: "2026-09-13"
+description: "123"
+tags: ["true", "12", "2026-01-01", "a: b"]
+custom:
+  enabled: false
+  label: "null"
+  lines: |
+    One
+    Two
+---
+
+Body with **formatting**.\n\n`;
+    await fs.writeFile(filename, source);
+    const before = parseFrontMatter<Record<string, unknown>>(source);
+    expect(publish("tech").status).toBe(0);
+    const after = parseFrontMatter(await fs.readFile(filename, "utf8"));
+    expect(after.attributes).toEqual({
+      ...before.attributes,
+      devto_id: 123,
+      devto_url: "https://dev.to/example/tech",
+    });
+    expect(after.body).toBe(before.body);
+  });
+
+  it.each([
+    true,
+    false,
+  ])("persists a recovered article ID only after a successful retry (%s)", async (success) => {
+    await addPost(
+      "tech",
+      "devto_id: 12\ndevto_url: https://dev.to/example/old\n"
+    );
+    const filename = path.join(directory, "posts/tech/index.md");
+    const original = await fs.readFile(filename, "utf8");
+    await fs.writeFile(
+      path.join(directory, "mock-fetch.mjs"),
+      `
+import fs from "node:fs";
+globalThis.fetch = async (url) => {
+  fs.appendFileSync("urls.jsonl", JSON.stringify(url) + "\\n");
+  if (url.endsWith("/12")) return new Response("{}", {status:404});
+  if (url.endsWith("/me/all")) return Response.json([{id:123,slug:"tech",title:"tech",url:"https://dev.to/example/tech"}]);
+  return Response.json({id:123,url:"https://dev.to/example/tech"}, {status:${success ? 200 : 500}});
+};`
+    );
+    expect(publish("tech", "y\n").status).toBe(success ? 0 : 1);
+    const saved = await fs.readFile(filename, "utf8");
+    if (!success) {
+      expect(saved).toBe(original);
+      return;
+    }
+    expect(parseFrontMatter(saved).attributes).toMatchObject({
+      devto_id: 123,
+      devto_url: "https://dev.to/example/tech",
+    });
+    await fs.writeFile(path.join(directory, "urls.jsonl"), "");
+    expect(publish("tech", "y\n").status).toBe(0);
+    expect(
+      (await fs.readFile(path.join(directory, "urls.jsonl"), "utf8")).trim()
+    ).toBe(JSON.stringify("https://dev.to/api/articles/123"));
+  });
 });
 
 afterEach(async () => {
