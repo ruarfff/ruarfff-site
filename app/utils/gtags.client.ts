@@ -1,9 +1,9 @@
 declare global {
   interface Window {
     gtag: (
-      option: string,
+      option: "config",
       gaTrackingId: string,
-      options: Record<string, unknown>
+      options: { page_path: string }
     ) => void;
   }
 }
@@ -17,8 +17,10 @@ export const pageview = (url: string, trackingId: string) => {
     console.warn(
       "window.gtag is not defined. This could mean your google analytics script has not loaded on the page yet."
     );
+
     return;
   }
+
   window.gtag("config", trackingId, {
     page_path: url,
   });

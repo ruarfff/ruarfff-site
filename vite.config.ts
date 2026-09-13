@@ -31,6 +31,7 @@ export default defineConfig({
           ) => {
             const match = fullPath.match(/posts\/([^/]+)\//);
             const slug = match ? match[1] : "";
+
             return `${slug}/${fileName}.${fileExtension}`;
           },
         },

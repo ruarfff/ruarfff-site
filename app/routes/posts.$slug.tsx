@@ -1,5 +1,4 @@
 import ReactMarkdown from "react-markdown";
-import type { MetaFunction } from "react-router";
 import { Link, useLoaderData } from "react-router";
 import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
@@ -10,11 +9,11 @@ import type { Route } from "./+types/posts.$slug";
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
   invariant(params.slug, "expected params.slug");
+
   return getPost(params.slug);
 };
 
-export const meta: MetaFunction = ({ loaderData }) => {
-  const post = loaderData as Post | undefined;
+export const meta: Route.MetaFunction = ({ loaderData: post }) => {
   return [
     { title: `${post?.title} | Ruairí's Site` },
     {
@@ -58,9 +57,11 @@ export default function PostSlug() {
             components={{
               img: ({ src, alt, ...props }) => {
                 let transformedSrc = src;
+
                 if (src && !src.startsWith("/") && !src.startsWith("http")) {
                   transformedSrc = `/images/${post.slug}/${src}`;
                 }
+
                 return <img src={transformedSrc} alt={alt} {...props} />;
               },
               pre: MarkdownCodeBlock,

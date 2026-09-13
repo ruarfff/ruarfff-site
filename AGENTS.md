@@ -12,10 +12,10 @@ Before writing, changing, or reviewing code, read and follow
 - **Development server**: `npm run dev` - Starts the dev server; see `vite.config.ts` for the port
 - **Build**: `npm run build` - Builds production bundle for Netlify deployment
 - **Test**: `npm test` - Runs Vitest test suite
-- **Lint**: `npm run lint` - Runs Biome linting
-- **Lint fix**: `npm run lint:fix` - Runs Biome linting with auto-fixes
-- **Check**: `npm run check` - Runs Biome linting and formatting checks
-- **Check fix**: `npm run check:fix` - Runs Biome with auto-fixes for linting and formatting
+- **Lint**: `npm run lint` - Runs Biome and Oxlint, including anti-slop rules
+- **Lint fix**: `npm run lint:fix` - Runs Biome and Oxlint with auto-fixes
+- **Check**: `npm run check` - Runs Biome formatting and lint checks, then Oxlint
+- **Check fix**: `npm run check:fix` - Runs Biome and Oxlint with formatting and lint auto-fixes
 - **Format**: `npm run format` - Formats code with Biome
 - **Type check**: `npm run typecheck` - Generates React Router types and runs TypeScript checks
 

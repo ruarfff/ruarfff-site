@@ -8,6 +8,7 @@ import parseFrontMatter from "front-matter";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 const script = fileURLToPath(new URL("./publish-to-devto.ts", import.meta.url));
+
 let directory: string;
 
 beforeEach(async () => {
@@ -25,6 +26,23 @@ globalThis.fetch = async (url, options) => {
 });
 
 describe("publishing metadata", () => {
+  it.each([
+    { id: "123", url: "https://dev.to/example/tech" },
+    { id: 123 },
+  ])("does not rewrite front matter for an invalid publishing response: %j", async (response) => {
+    await addPost("tech");
+    const filename = path.join(directory, "posts/tech/index.md");
+    const before = await fs.readFile(filename, "utf8");
+
+    await fs.writeFile(
+      path.join(directory, "mock-fetch.mjs"),
+      `globalThis.fetch = async () => Response.json(${JSON.stringify(response)});`
+    );
+
+    expect(publish("tech").status).toBe(1);
+    expect(await fs.readFile(filename, "utf8")).toBe(before);
+  });
+
   it("loads quoted dotenv values and comments with file-over-shell precedence", async () => {
     await addPost("tech");
     await fs.writeFile(
@@ -50,6 +68,7 @@ globalThis.fetch = async (_url, options) => {
   it("preserves YAML values and the article body when adding publishing metadata", async () => {
     await addPost("tech");
     const filename = path.join(directory, "posts/tech/index.md");
+
     const source = `---
 title: "true"
 date: "2026-09-13"
@@ -64,12 +83,17 @@ custom:
 ---
 
 Body with **formatting**.\n\n`;
+
     await fs.writeFile(filename, source);
-    const before = parseFrontMatter<Record<string, unknown>>(source);
+    const before = parseFrontMatter(source);
     expect(publish("tech").status).toBe(0);
     const after = parseFrontMatter(await fs.readFile(filename, "utf8"));
     expect(after.attributes).toEqual({
-      ...before.attributes,
+      title: "true",
+      date: "2026-09-13",
+      description: "123",
+      tags: ["true", "12", "2026-01-01", "a: b"],
+      custom: { enabled: false, label: "null", lines: "One\nTwo\n" },
       devto_id: 123,
       devto_url: "https://dev.to/example/tech",
     });
@@ -99,10 +123,13 @@ globalThis.fetch = async (url) => {
     );
     expect(publish("tech", "y\n").status).toBe(success ? 0 : 1);
     const saved = await fs.readFile(filename, "utf8");
+
     if (!success) {
       expect(saved).toBe(original);
+
       return;
     }
+
     expect(parseFrontMatter(saved).attributes).toMatchObject({
       devto_id: 123,
       devto_url: "https://dev.to/example/tech",
@@ -147,7 +174,9 @@ function publish(slug?: string, input?: string) {
       timeout: 10000,
     }
   );
+
   expect(result.error).toBeUndefined();
+
   return { status: result.status, output: result.stdout + result.stderr };
 }
 
@@ -158,6 +187,7 @@ describe("Dev.to tech-only publishing", () => {
   ])("rejects personal posts by slug, including previously published posts (%s)", async (metadata) => {
     await addPost("tech");
     await addPost("personal", `section: personal\n${metadata}`);
+
     const original = await fs.readFile(
       path.join(directory, "posts/personal/index.md"),
       "utf8"
@@ -185,9 +215,11 @@ describe("Dev.to tech-only publishing", () => {
 
     expect(result.status).toBe(0);
     expect(result.output).not.toContain("private-story");
+
     const request = JSON.parse(
       await fs.readFile(path.join(directory, "requests.jsonl"), "utf8")
     );
+
     expect(request.body.article.title).toBe("tech");
   });
 
@@ -198,9 +230,11 @@ describe("Dev.to tech-only publishing", () => {
     await addPost("tech", metadata);
 
     expect(publish("tech").status).toBe(0);
+
     const request = JSON.parse(
       await fs.readFile(path.join(directory, "requests.jsonl"), "utf8")
     );
+
     expect(request.method).toBe("POST");
     expect(request.body.article.canonical_url).toBe(
       "https://ruarfff.com/posts/tech"

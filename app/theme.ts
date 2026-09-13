@@ -25,6 +25,7 @@ function subscribe(onChange: () => void) {
     attributes: true,
     attributeFilter: ["class", "data-code-theme"],
   });
+
   return () => observer.disconnect();
 }
 
@@ -55,6 +56,7 @@ export function useCodeTheme(): CodeTheme {
     subscribe,
     () => {
       const value = document.documentElement.dataset.codeTheme;
+
       return value === "light" ? "light" : "dark";
     },
     () => "dark"

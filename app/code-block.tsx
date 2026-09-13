@@ -36,6 +36,7 @@ for (const [name, grammar] of Object.entries({
 
 function CodeBlock({ code, language }: { code: string; language: string }) {
   const [wrap, setWrap] = useState(true);
+
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
     "idle"
   );
@@ -43,6 +44,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   useEffect(() => {
     if (copyStatus !== "copied") return;
     const timer = setTimeout(() => setCopyStatus("idle"), 2000);
+
     return () => clearTimeout(timer);
   }, [copyStatus]);
 
@@ -105,18 +107,24 @@ export default function MarkdownCodeBlock({
   ...props
 }: ComponentProps<"pre"> & ExtraProps) {
   const codeNode = node?.children[0];
+
   if (codeNode?.type !== "element" || codeNode.tagName !== "code") {
     return <pre {...props}>{children}</pre>;
   }
+
   const code = codeNode.children
     .map((child) => (child.type === "text" ? child.value : ""))
     .join("");
+
   const classNames = codeNode.properties.className;
+
   const languageClass = Array.isArray(classNames)
     ? classNames.find((name) => String(name).startsWith("language-"))
     : undefined;
+
   const language = languageClass
     ? String(languageClass).slice("language-".length)
     : "text";
+
   return <CodeBlock key={code} code={code} language={language} />;
 }

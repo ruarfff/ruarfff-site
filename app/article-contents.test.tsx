@@ -22,17 +22,22 @@ describe("article contents", () => {
     expect(toc).not.toBeNull();
     expect(container.querySelectorAll("nav")).toHaveLength(1);
     expect(container.querySelectorAll("a[name]")).toHaveLength(0);
+
     for (const heading of container.querySelectorAll("h2, h3")) {
       expect(heading.textContent).not.toContain("<a");
       expect(heading.textContent).not.toBe("Contents");
     }
+
     for (const link of toc?.querySelectorAll("a") ?? []) {
       const id = decodeURIComponent(link.hash.slice(1));
+
       const target = [...container.querySelectorAll("h2, h3")].find(
         (heading) => heading.id === id
       );
+
       expect(target?.textContent?.trim()).toBe(link.textContent);
     }
+
     for (const link of container.querySelectorAll<HTMLAnchorElement>(
       'a[href^="#"]'
     )) {
@@ -48,6 +53,7 @@ describe("article contents", () => {
     const { container } = renderArticle(
       '## Contents\n\n- [New title](#old-link)\n\n## New title <a name="old-link"></a>\n\n### Detail\n\n## Last section'
     );
+
     expect(container.querySelector("h2")?.id).toBe("old-link");
     expect(container.querySelector("h2")?.textContent).toBe("New title");
     expect(
@@ -62,6 +68,7 @@ describe("article contents", () => {
     const { container } = renderArticle(
       '## Use **async** and `await`\n\n## Repeat\n\n## Repeat\n\n```md\n## Example <a name="example"></a>\n```'
     );
+
     expect(
       [...container.querySelectorAll("h2")].map((heading) => heading.id)
     ).toEqual(["use-async-and-await", "repeat", "repeat-1"]);
@@ -75,9 +82,11 @@ describe("article contents", () => {
     const { container } = renderArticle(
       '## One <a id="shared"></a>\n\n## Shared\n\n## Three <a name="shared"></a>'
     );
+
     const ids = [...container.querySelectorAll("h2")].map(
       (heading) => heading.id
     );
+
     expect(new Set(ids).size).toBe(3);
     expect(ids[0]).toBe("shared");
   });
@@ -86,6 +95,7 @@ describe("article contents", () => {
     const { container } = renderArticle(
       "## Table of contents\n\n1. [First](#first)\n\n## First\n\n### One\n\n### Two\n\n#### Detail\n\n## Second"
     );
+
     const root = container.querySelector("nav details > ul");
     expect(root?.children).toHaveLength(2);
     const nested = root?.children[0].querySelector("ul");
@@ -99,6 +109,7 @@ describe("article contents", () => {
     const { container } = renderArticle(
       '## Only section\n\n<script>alert("example")</script>'
     );
+
     expect(container.querySelector("nav")).toBeNull();
     expect(container.querySelector("script")).toBeNull();
   });
@@ -108,6 +119,7 @@ describe("article contents", () => {
       "posts/local-coding-agent-on-macos/index.md",
       "utf8"
     );
+
     const { container } = renderArticle(parseFrontMatter(source).body);
     expect(container.querySelectorAll("h2").length).toBeGreaterThan(1);
     expect(container.querySelector("nav")).toBeNull();
@@ -118,6 +130,7 @@ describe("article contents", () => {
     const { container } = renderArticle(
       "## Contents\n\nAn ordinary section.\n\n## Another section"
     );
+
     expect(container.querySelector("nav")).toBeNull();
     expect(container.querySelector("#contents")?.textContent).toBe("Contents");
   });

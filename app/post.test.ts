@@ -5,8 +5,11 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 let directory: string;
+
 let originalDirectory: string;
+
 let getPost: typeof import("./post").getPost;
+
 let getPosts: typeof import("./post").getPosts;
 
 beforeEach(async () => {
@@ -83,6 +86,7 @@ describe("post loading", () => {
     const error = Object.assign(new Error("Permission denied"), {
       code: "EACCES",
     });
+
     vi.spyOn(fs, "readFile").mockRejectedValueOnce(error);
     await expect(getPost("unreadable")).rejects.toBe(error);
   });
@@ -112,9 +116,11 @@ describe("post loading", () => {
   ])("rejects malformed metadata (%s) with a file and field diagnostic", async (line, field) => {
     const folder = path.join(directory, "posts", "invalid");
     await fs.mkdir(folder);
+
     const attributes = ["title: Example", "date: 2026-09-13"].filter(
       (value) => !value.startsWith(`${field}:`)
     );
+
     await fs.writeFile(
       path.join(folder, "index.md"),
       `---\n${[...attributes, line].join("\n")}\n---\nText`

@@ -27,6 +27,16 @@ This starts your app in development mode, rebuilding assets on file changes.
 
 Open up [http://localhost:3000](http://localhost:3000).
 
+Run `npm run check` for Biome formatting and lint checks plus Oxlint's
+anti-slop rules. `npm run lint` runs both linters without formatting checks.
+`make check` also runs type checks, unit tests, and browser tests.
+
+Anti-slop is vendored in `tools/oxlint/anti-slop/` and configured in
+[.oxlintrc.json](.oxlintrc.json). Keep `oxlint` and `@oxlint/plugins` pinned to
+the same version. See the [provenance record](tools/oxlint/anti-slop/UPSTREAM.md)
+before updating the vendored rules. Biome remains the formatter; vendored
+files are excluded from application checks.
+
 ## Deployment
 
 Deployed to [Netlify](https://www.netlify.com/).

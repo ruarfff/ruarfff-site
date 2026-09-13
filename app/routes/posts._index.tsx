@@ -16,6 +16,7 @@ export const loader = async () => getPosts("tech");
 
 export default function Posts() {
   const posts = useLoaderData<typeof loader>();
+
   return (
     <main className="site-width page-content">
       <div className="page-intro">

@@ -49,6 +49,7 @@ test.describe("Mobile Responsiveness", () => {
     const fontSize = await firstPostLink.evaluate(
       (el) => window.getComputedStyle(el).fontSize
     );
+
     // text-xl is 1.25rem = 20px
     expect(Number.parseInt(fontSize, 10)).toBeGreaterThanOrEqual(20);
   });
@@ -62,6 +63,7 @@ test.describe("Mobile Responsiveness", () => {
     const fontSize = await prose.evaluate(
       (el) => window.getComputedStyle(el).fontSize
     );
+
     // prose-lg base is 18px
     expect(Number.parseInt(fontSize, 10)).toBeGreaterThanOrEqual(18);
   });
@@ -111,9 +113,11 @@ test.describe("Mobile Responsiveness", () => {
     await page.reload();
     await expect(html).toHaveClass(/dark/);
     await expect(html).toHaveAttribute("data-code-theme", "light");
+
     const navigation = page.getByRole("navigation", {
       name: "Main navigation",
     });
+
     await navigation
       .getByRole("link", { name: "Personal", exact: true })
       .click();

@@ -38,6 +38,7 @@ describe("code examples", () => {
   it("renders highlighted code in one pre, preserving whitespace", () => {
     const code =
       'const url = "https://example.com/a/very/long/path";\n\tconsole.log(url);\n';
+
     const { container } = renderExample(`\`\`\`javascript\n${code}\`\`\``);
 
     expect(container.querySelectorAll("pre")).toHaveLength(1);
@@ -58,6 +59,7 @@ describe("code examples", () => {
     const { container } = renderExample(
       `\`\`\`${language}\nplain output\n\`\`\``
     );
+
     expect(container.querySelector("pre code")?.textContent).toBe(
       "plain output\n"
     );
@@ -68,6 +70,7 @@ describe("code examples", () => {
     const { container } = renderExample(
       "Run `npm test` first.\n\n    npm run build\n"
     );
+
     expect(container.querySelector("p code")?.textContent).toBe("npm test");
     expect(container.querySelectorAll(".code-example")).toHaveLength(1);
     expect(container.querySelector("pre code")?.textContent).toBe(
@@ -78,8 +81,10 @@ describe("code examples", () => {
   it("toggles wrapping without changing copied commands or line breaks", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     vi.stubGlobal("navigator", { clipboard: { writeText } });
+
     const command =
       'curl "https://example.com/api?one=1&two=2" \\\n  --header "Accept: application/json"\n';
+
     const { container } = renderExample(`\`\`\`bash\n${command}\`\`\``);
 
     fireEvent.click(screen.getByRole("button", { name: "Wrap lines" }));

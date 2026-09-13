@@ -26,6 +26,7 @@ function renderHeader() {
   const router = createMemoryRouter([{ path: "*", element: <Header /> }]);
   const result = render(<RouterProvider router={router} />);
   fireEvent.click(screen.getByText("Theme", { exact: true }));
+
   return result;
 }
 
@@ -56,11 +57,13 @@ describe("site and code themes", () => {
   it("shares a code preference without changing the page theme", async () => {
     document.documentElement.dataset.codeTheme = "light";
     renderHeader();
+
     const { container } = render(
       <ReactMarkdown components={{ pre: MarkdownCodeBlock }}>
         {"```js\nlet first = 1;\n```\n\n```sh\necho second\n```"}
       </ReactMarkdown>
     );
+
     const selectors = screen.getAllByRole("switch", { name: "Code theme" });
     expect(selectors).toHaveLength(1);
     expect(container.querySelectorAll("select")).toHaveLength(0);

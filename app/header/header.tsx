@@ -1,18 +1,12 @@
-import { Link, useLocation, useMatches } from "react-router";
+import { Link, useLocation, useRouteLoaderData } from "react-router";
+import type { loader as postLoader } from "~/routes/posts.$slug";
 import { setCodeTheme, setSiteTheme, useCodeTheme, useDarkMode } from "~/theme";
 
 function Header() {
   const { pathname } = useLocation();
-  const matches = useMatches();
-  const personal =
-    pathname === "/personal" ||
-    matches.some(
-      ({ loaderData: data }) =>
-        data &&
-        typeof data === "object" &&
-        "section" in data &&
-        data.section === "personal"
-    );
+  const post = useRouteLoaderData<typeof postLoader>("routes/posts.$slug");
+  const personal = pathname === "/personal" || post?.section === "personal";
+
   const dark = useDarkMode();
   const codeTheme = useCodeTheme();
 

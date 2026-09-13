@@ -4,18 +4,30 @@ import readline from "node:readline";
 import { parseEnv } from "node:util";
 import parseFrontMatter from "front-matter";
 import yaml from "js-yaml";
+import { z } from "zod";
 
-interface PostAttributes {
-  title: string;
-  section?: "tech" | "personal";
-  date?: string | Date;
-  postDate?: string | Date;
-  description?: string;
-  tags?: string | string[];
-  devto_id?: string | number;
-  devto_url?: string;
-  [key: string]: string | number | string[] | Date | undefined;
-}
+const postAttributes = z.looseObject({
+  title: z.string().min(1),
+  section: z.enum(["tech", "personal"]).optional(),
+  date: z.union([z.string(), z.date()]).optional(),
+  postDate: z.union([z.string(), z.date()]).optional(),
+  description: z.string().optional(),
+  tags: z.union([z.string(), z.array(z.string())]).optional(),
+  devto_id: z.union([z.string(), z.number()]).optional(),
+  devto_url: z.string().optional(),
+});
+
+type PostAttributes = z.infer<typeof postAttributes>;
+
+const publishedArticle = z.object({
+  id: z.number().int().positive(),
+  url: z.url(),
+});
+
+const devToArticle = publishedArticle.extend({
+  slug: z.string(),
+  title: z.string(),
+});
 
 interface PostItem {
   slug: string;
@@ -30,7 +42,7 @@ async function loadEnv() {
     const envPath = path.resolve(".env");
     const content = await fs.readFile(envPath, "utf-8");
     Object.assign(process.env, parseEnv(content));
-  } catch (_err) {
+  } catch {
     // Ignore error if .env doesn't exist
   }
 }
@@ -39,19 +51,23 @@ async function loadEnv() {
 async function saveApiKeyToEnv(key: string) {
   const envPath = path.resolve(".env");
   let content = "";
+
   try {
     content = await fs.readFile(envPath, "utf-8");
-  } catch (_e) {
+  } catch {
     // file doesn't exist
   }
 
   const lines = content.split("\n");
   let found = false;
+
   const newLines = lines.map((line) => {
     if (line.trim().startsWith("DEVTO_API_KEY=")) {
       found = true;
+
       return `DEVTO_API_KEY=${key}`;
     }
+
     return line;
   });
 
@@ -69,6 +85,7 @@ function ask(query: string): Promise<string> {
     input: process.stdin,
     output: process.stdout,
   });
+
   return new Promise((resolve) =>
     rl.question(query, (ans) => {
       rl.close();
@@ -84,19 +101,24 @@ function rewriteImages(markdown: string, slug: string, host: string): string {
     if (url.startsWith("http://") || url.startsWith("https://")) {
       return match;
     }
+
     if (url.startsWith("/")) {
       return `![${alt}](${host}${url})`;
     }
+
     const cleanUrl = url.replace(/^\.\//, "");
+
     return `![${alt}](${host}/images/${slug}/${cleanUrl})`;
   });
 }
 
-function formatDate(date: unknown): string {
+function formatDate(date: PostAttributes["date"]): string {
   if (!date) return "";
+
   if (date instanceof Date) {
     return date.toISOString().split("T")[0];
   }
+
   return String(date);
 }
 
@@ -109,23 +131,24 @@ async function getPosts(): Promise<PostItem[]> {
     if (entry.isDirectory()) {
       const slug = entry.name;
       const filePath = path.join(postsDir, slug, "index.md");
+
       try {
         const fileContent = await fs.readFile(filePath, "utf-8");
-        const fm = parseFrontMatter<PostAttributes>(fileContent);
+        const fm = parseFrontMatter(fileContent);
+        const attributes = postAttributes.parse(fm.attributes);
+
         // Only tech posts can be sent to Dev.to. Older tech posts omit section.
-        if (
-          fm.attributes.section !== undefined &&
-          fm.attributes.section !== "tech"
-        ) {
+        if (attributes.section !== undefined && attributes.section !== "tech") {
           continue;
         }
+
         posts.push({
           slug,
           filePath,
-          attributes: fm.attributes,
+          attributes,
           body: fm.body,
         });
-      } catch (_err) {
+      } catch {
         // Skip directory if it doesn't contain a valid index.md
       }
     }
@@ -135,6 +158,7 @@ async function getPosts(): Promise<PostItem[]> {
   return posts.sort((a, b) => {
     const dateA = formatDate(a.attributes.date || a.attributes.postDate);
     const dateB = formatDate(b.attributes.date || b.attributes.postDate);
+
     return dateB.localeCompare(dateA);
   });
 }
@@ -157,6 +181,7 @@ async function run() {
 
   if (cliSlug) {
     selectedPost = posts.find((p) => p.slug === cliSlug);
+
     if (!selectedPost) {
       console.error(
         `\x1b[31mError: Post '${cliSlug}' was not found or is not a tech blog post. Only tech blog posts can be sent to Dev.to.\x1b[0m`
@@ -172,9 +197,11 @@ async function run() {
     posts.forEach((p, idx) => {
       const dateStr =
         formatDate(p.attributes.date || p.attributes.postDate) || "No Date";
+
       const status = p.attributes.devto_id
         ? `\x1b[32mPublished (ID: ${p.attributes.devto_id})\x1b[0m`
         : "\x1b[33mUnpublished\x1b[0m";
+
       console.log(
         `  ${String(idx + 1).padStart(2)}. [${dateStr}] ${p.slug.padEnd(40)} - ${status}`
       );
@@ -183,31 +210,37 @@ async function run() {
 
     const answer = await ask("Enter the number of the post: ");
     const num = parseInt(answer.trim(), 10);
+
     if (Number.isNaN(num) || num < 1 || num > posts.length) {
       console.error("\x1b[31mInvalid selection.\x1b[0m");
       process.exit(1);
     }
+
     selectedPost = posts[num - 1];
   }
 
   await loadEnv();
 
   let apiKey = process.env.DEVTO_API_KEY;
+
   if (!apiKey) {
     console.log(
       "\x1b[33mDEVTO_API_KEY environment variable is not set.\x1b[0m"
     );
     apiKey = await ask("Enter your Dev.to API Key: ");
     apiKey = apiKey.trim();
+
     if (!apiKey) {
       console.error(
         "\x1b[31mError: Dev.to API Key is required to publish.\x1b[0m"
       );
       process.exit(1);
     }
+
     const saveEnv = await ask(
       "Would you like to save this key to your local .env file? (y/n): "
     );
+
     if (saveEnv.toLowerCase().startsWith("y")) {
       await saveApiKeyToEnv(apiKey);
     }
@@ -224,9 +257,11 @@ async function run() {
     console.log(
       `Status: Already published to Dev.to (ID: ${attributes.devto_id}, URL: ${attributes.devto_url})`
     );
+
     const confirmUpdate = await ask(
       "Do you want to update the existing Dev.to post? (y/n): "
     );
+
     if (!confirmUpdate.toLowerCase().startsWith("y")) {
       console.log("Cancelled.");
       process.exit(0);
@@ -241,9 +276,10 @@ async function run() {
 
   // Parse tags
   let tags: string[] = [];
+
   if (Array.isArray(attributes.tags)) {
     tags = attributes.tags.map((t) => String(t).trim().toLowerCase());
-  } else if (typeof attributes.tags === "string") {
+  } else if (attributes.tags !== undefined) {
     tags = attributes.tags.split(",").map((t) => t.trim().toLowerCase());
   }
 
@@ -282,26 +318,24 @@ async function run() {
       console.log(
         "\x1b[33mDev.to returned 404. Checking if the article exists under a different ID...\x1b[0m"
       );
+
       const meRes = await fetch("https://dev.to/api/articles/me/all", {
         headers: {
           "api-key": apiKey,
           accept: "application/vnd.forem.api-v1+json",
         },
       });
+
       if (meRes.ok) {
-        interface DevToArticle {
-          id: number;
-          slug: string;
-          url: string;
-          title: string;
-        }
-        const myArticles = (await meRes.json()) as DevToArticle[];
+        const myArticles = z.array(devToArticle).parse(await meRes.json());
+
         const matchingArticle = myArticles.find(
           (art) =>
             art.slug === slug ||
             art.url.includes(slug) ||
             art.title.toLowerCase() === attributes.title.toLowerCase()
         );
+
         if (matchingArticle) {
           console.log(
             `\x1b[32m✔ Found matching article on Dev.to with correct ID: ${matchingArticle.id}.\x1b[0m`
@@ -326,7 +360,7 @@ async function run() {
       throw new Error(`Dev.to API error (${response.status}): ${errorText}`);
     }
 
-    const result = (await response.json()) as { id: number; url: string };
+    const result = publishedArticle.parse(await response.json());
 
     console.log(
       `\n\x1b[32m✔ Success! Post ${isUpdate ? "updated" : "created"} on Dev.to.\x1b[0m`
@@ -342,11 +376,12 @@ async function run() {
       console.log(
         "Updating local markdown file with devto_id and devto_url..."
       );
+
       const updatedAttributes = {
         ...attributes,
         devto_id: result.id,
         devto_url: result.url,
-      } as Record<string, unknown>;
+      };
 
       const newContent = `---\n${yaml.safeDump(updatedAttributes)}---\n${body}`;
       await fs.writeFile(filePath, newContent, "utf-8");
