@@ -135,7 +135,10 @@ async function getPosts(): Promise<PostItem[]> {
       try {
         const fileContent = await fs.readFile(filePath, "utf-8");
         const fm = parseFrontMatter(fileContent);
-        const attributes = postAttributes.parse(fm.attributes);
+
+        const attributes = postAttributes.parse(
+          yaml.safeLoad(fm.frontmatter ?? "", { schema: yaml.JSON_SCHEMA })
+        );
 
         // Only tech posts can be sent to Dev.to. Older tech posts omit section.
         if (attributes.section !== undefined && attributes.section !== "tech") {

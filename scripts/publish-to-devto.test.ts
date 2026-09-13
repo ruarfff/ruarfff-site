@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import parseFrontMatter from "front-matter";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const script = fileURLToPath(new URL("./publish-to-devto.ts", import.meta.url));
 
@@ -65,13 +65,16 @@ globalThis.fetch = async (_url, options) => {
     expect(result.status, result.output).toBe(0);
   });
 
-  it("preserves YAML values and the article body when adding publishing metadata", async () => {
+  it.each([
+    '"2026-09-13"',
+    "2026-09-13",
+  ])("preserves YAML values and the article body with date %s", async (date) => {
     await addPost("tech");
     const filename = path.join(directory, "posts/tech/index.md");
 
     const source = `---
 title: "true"
-date: "2026-09-13"
+date: ${date}
 description: "123"
 tags: ["true", "12", "2026-01-01", "a: b"]
 custom:
@@ -98,6 +101,7 @@ Body with **formatting**.\n\n`;
       devto_url: "https://dev.to/example/tech",
     });
     expect(after.body).toBe(before.body);
+    await expectLoadablePost();
   });
 
   it.each([
@@ -134,6 +138,7 @@ globalThis.fetch = async (url) => {
       devto_id: 123,
       devto_url: "https://dev.to/example/tech",
     });
+    await expectLoadablePost();
     await fs.writeFile(path.join(directory, "urls.jsonl"), "");
     expect(publish("tech", "y\n").status).toBe(0);
     expect(
@@ -254,3 +259,19 @@ describe("Dev.to tech-only publishing", () => {
     ).rejects.toThrow();
   });
 });
+
+async function expectLoadablePost() {
+  const originalDirectory = process.cwd();
+
+  try {
+    process.chdir(directory);
+    vi.resetModules();
+    const { getPost, getPosts } = await import("../app/post");
+    expect(await getPost("tech")).toMatchObject({ date: "2026-09-13" });
+    expect(await getPosts("tech")).toHaveLength(1);
+    expect(await getPosts()).toHaveLength(1);
+    expect(await getPosts("personal")).toEqual([]);
+  } finally {
+    process.chdir(originalDirectory);
+  }
+}
