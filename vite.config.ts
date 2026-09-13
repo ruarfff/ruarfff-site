@@ -7,6 +7,8 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  // Static-copy reads this even when React Router builds separate environments.
+  build: { outDir: "build/client" },
   server: {
     port: 3000,
   },
