@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import imageMetadata from "virtual:post-images";
 import parseFrontMatter from "front-matter";
 import yaml from "js-yaml";
 import { z } from "zod";
@@ -126,5 +127,5 @@ export async function getPost(slug: string) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return { ...post };
+  return { ...post, images: imageMetadata[slug] ?? {} };
 }

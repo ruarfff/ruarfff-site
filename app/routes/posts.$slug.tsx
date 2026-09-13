@@ -4,7 +4,7 @@ import gfm from "remark-gfm";
 import invariant from "tiny-invariant";
 import articleContents from "~/article-contents";
 import MarkdownCodeBlock from "~/code-block";
-import { getPost, type Post } from "~/post";
+import { getPost } from "~/post";
 import type { Route } from "./+types/posts.$slug";
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
@@ -24,7 +24,9 @@ export const meta: Route.MetaFunction = ({ loaderData: post }) => {
 };
 
 export default function PostSlug() {
-  const post = useLoaderData<Post>();
+  const post = useLoaderData<typeof loader>();
+
+  let imageIndex = 0;
 
   return (
     <div className={`min-h-screen flex flex-col`}>
@@ -55,14 +57,32 @@ export default function PostSlug() {
             rehypePlugins={[articleContents]}
             className="prose prose-lg md:prose-xl dark:prose-invert max-w-none"
             components={{
-              img: ({ src, alt, ...props }) => {
+              img: ({ src, alt, node: _node, ...props }) => {
                 let transformedSrc = src;
 
                 if (src && !src.startsWith("/") && !src.startsWith("http")) {
                   transformedSrc = `/images/${post.slug}/${src}`;
                 }
 
-                return <img src={transformedSrc} alt={alt} {...props} />;
+                const image = src
+                  ? post.images[src.replace(/^\.\//, "")]
+                  : undefined;
+
+                const initial = imageIndex++ === 0;
+
+                return (
+                  <img
+                    {...props}
+                    src={transformedSrc}
+                    alt={alt}
+                    width={image?.width}
+                    height={image?.height}
+                    srcSet={image?.srcSet}
+                    sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 943px) calc(100vw - 48px), 896px"
+                    loading={initial ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                );
               },
               pre: MarkdownCodeBlock,
             }}

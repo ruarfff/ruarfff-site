@@ -1,9 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const production = process.env.SITE_TEST_PRODUCTION === "true";
+
 const isCI = process.env.CI === "true";
 
 export default defineConfig({
   testDir: "./e2e",
+  testMatch: "**/*.spec.ts",
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
@@ -27,7 +30,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev -- --host 127.0.0.1 --port 3107 --strictPort",
+    command: production
+      ? "npm start"
+      : "npm run dev -- --host 127.0.0.1 --port 3107 --strictPort",
+    env: { PORT: "3107" },
     url: "http://127.0.0.1:3107",
     reuseExistingServer: false,
   },

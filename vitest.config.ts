@@ -1,3 +1,4 @@
+import postImages from "./scripts/post-images";
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
@@ -6,7 +7,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react(), tsconfigPaths(), postImages()],
   test: {
     globals: true,
     environment: "happy-dom",

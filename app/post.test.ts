@@ -42,7 +42,7 @@ describe("post loading", () => {
   it("normalizes list and detail metadata consistently", async () => {
     await addPost("tech", "description: Example description\n");
     const detail = await getPost("tech");
-    const { markdown, ...summary } = detail;
+    const { markdown, images: _images, ...summary } = detail;
     expect(markdown).toBe("Article body.\n");
     expect(detail).toMatchObject({
       date: "2026-09-13",

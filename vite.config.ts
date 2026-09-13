@@ -5,6 +5,7 @@ import tailwindcss from "tailwindcss";
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsconfigPaths from "vite-tsconfig-paths";
+import postImages from "./scripts/post-images";
 
 export default defineConfig({
   // Static-copy reads this even when React Router builds separate environments.
@@ -19,6 +20,7 @@ export default defineConfig({
   },
   plugins: [
     reactRouter(),
+    postImages(),
     tsconfigPaths(),
     netlifyPlugin(),
     viteStaticCopy({
