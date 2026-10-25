@@ -78,22 +78,21 @@ describe("site and code themes", () => {
     expect(localStorage.getItem("code-theme")).toBe("light");
   });
 
-  it.each([
-    "light",
-    "dark",
-  ])("restores the saved page theme and %s code theme before hydration", (codeTheme) => {
-    localStorage.setItem("theme", "dark");
-    localStorage.setItem("code-theme", codeTheme);
-    new Function(themeScript)();
-    expect(document.documentElement).toHaveClass("dark");
-    expect(document.documentElement.dataset.codeTheme).toBe(codeTheme);
-    renderHeader();
-    expect(screen.getByRole("switch", { name: "Site theme" })).toBeChecked();
-    expect(screen.getByRole("switch", { name: "Code theme" })).toHaveAttribute(
-      "aria-checked",
-      String(codeTheme === "dark")
-    );
-  });
+  it.each(["light", "dark"])(
+    "restores the saved page theme and %s code theme before hydration",
+    (codeTheme) => {
+      localStorage.setItem("theme", "dark");
+      localStorage.setItem("code-theme", codeTheme);
+      new Function(themeScript)();
+      expect(document.documentElement).toHaveClass("dark");
+      expect(document.documentElement.dataset.codeTheme).toBe(codeTheme);
+      renderHeader();
+      expect(screen.getByRole("switch", { name: "Site theme" })).toBeChecked();
+      expect(
+        screen.getByRole("switch", { name: "Code theme" })
+      ).toHaveAttribute("aria-checked", String(codeTheme === "dark"));
+    }
+  );
 
   it("converts follow-page preferences to an independent saved code theme", async () => {
     localStorage.setItem("theme", "dark");
@@ -109,20 +108,20 @@ describe("site and code themes", () => {
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
   });
 
-  it.each([
-    false,
-    true,
-  ])("defaults to light site and dark code when system dark mode is %s", (systemDark) => {
-    vi.stubGlobal("matchMedia", () => ({ matches: systemDark }));
-    new Function(themeScript)();
-    expect(document.documentElement).not.toHaveClass("dark");
-    expect(document.documentElement.dataset.codeTheme).toBe("dark");
-    renderHeader();
-    expect(
-      screen.getByRole("switch", { name: "Site theme" })
-    ).not.toBeChecked();
-    expect(screen.getByRole("switch", { name: "Code theme" })).toBeChecked();
-  });
+  it.each([false, true])(
+    "defaults to light site and dark code when system dark mode is %s",
+    (systemDark) => {
+      vi.stubGlobal("matchMedia", () => ({ matches: systemDark }));
+      new Function(themeScript)();
+      expect(document.documentElement).not.toHaveClass("dark");
+      expect(document.documentElement.dataset.codeTheme).toBe("dark");
+      renderHeader();
+      expect(
+        screen.getByRole("switch", { name: "Site theme" })
+      ).not.toBeChecked();
+      expect(screen.getByRole("switch", { name: "Code theme" })).toBeChecked();
+    }
+  );
 
   it("uses light site and dark code defaults when storage is unavailable and still toggles", async () => {
     vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {

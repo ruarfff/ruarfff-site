@@ -39,22 +39,22 @@ globalThis.fetch = async (url, options) => {
 });
 
 describe("publishing metadata", () => {
-  it.each([
-    { id: "123", url: "https://dev.to/example/tech" },
-    { id: 123 },
-  ])("does not rewrite front matter for an invalid publishing response: %j", async (response) => {
-    await addPost("tech");
-    const filename = path.join(directory, "posts/tech/index.md");
-    const before = await fs.readFile(filename, "utf8");
+  it.each([{ id: "123", url: "https://dev.to/example/tech" }, { id: 123 }])(
+    "does not rewrite front matter for an invalid publishing response: %j",
+    async (response) => {
+      await addPost("tech");
+      const filename = path.join(directory, "posts/tech/index.md");
+      const before = await fs.readFile(filename, "utf8");
 
-    await fs.writeFile(
-      path.join(directory, "mock-fetch.mjs"),
-      `globalThis.fetch = async () => Response.json(${JSON.stringify(response)});`
-    );
+      await fs.writeFile(
+        path.join(directory, "mock-fetch.mjs"),
+        `globalThis.fetch = async () => Response.json(${JSON.stringify(response)});`
+      );
 
-    expect(publish("tech").status).toBe(1);
-    expect(await fs.readFile(filename, "utf8")).toBe(before);
-  });
+      expect(publish("tech").status).toBe(1);
+      expect(await fs.readFile(filename, "utf8")).toBe(before);
+    }
+  );
 
   it("loads quoted dotenv values and comments with file-over-shell precedence", async () => {
     await addPost("tech");
@@ -78,14 +78,13 @@ globalThis.fetch = async (_url, options) => {
     expect(result.status, result.output).toBe(0);
   });
 
-  it.each([
-    '"2026-09-13"',
-    "2026-09-13",
-  ])("preserves YAML values and the article body with date %s", async (date) => {
-    await addPost("tech");
-    const filename = path.join(directory, "posts/tech/index.md");
+  it.each(['"2026-09-13"', "2026-09-13"])(
+    "preserves YAML values and the article body with date %s",
+    async (date) => {
+      await addPost("tech");
+      const filename = path.join(directory, "posts/tech/index.md");
 
-    const source = `---
+      const source = `---
 title: "true"
 date: ${date}
 description: "123"
@@ -100,36 +99,36 @@ custom:
 
 Body with **formatting**.\n\n`;
 
-    await fs.writeFile(filename, source);
-    const before = parseFrontMatter(source);
-    expect(publish("tech").status).toBe(0);
-    const after = parseFrontMatter(await fs.readFile(filename, "utf8"));
-    expect(after.attributes).toEqual({
-      title: "true",
-      date: "2026-09-13",
-      description: "123",
-      tags: ["true", "12", "2026-01-01", "a: b"],
-      custom: { enabled: false, label: "null", lines: "One\nTwo\n" },
-      devto_id: 123,
-      devto_url: "https://dev.to/example/tech",
-    });
-    expect(after.body).toBe(before.body);
-    await expectLoadablePost();
-  });
+      await fs.writeFile(filename, source);
+      const before = parseFrontMatter(source);
+      expect(publish("tech").status).toBe(0);
+      const after = parseFrontMatter(await fs.readFile(filename, "utf8"));
+      expect(after.attributes).toEqual({
+        title: "true",
+        date: "2026-09-13",
+        description: "123",
+        tags: ["true", "12", "2026-01-01", "a: b"],
+        custom: { enabled: false, label: "null", lines: "One\nTwo\n" },
+        devto_id: 123,
+        devto_url: "https://dev.to/example/tech",
+      });
+      expect(after.body).toBe(before.body);
+      await expectLoadablePost();
+    }
+  );
 
-  it.each([
-    true,
-    false,
-  ])("persists a recovered article ID only after a successful retry (%s)", async (success) => {
-    await addPost(
-      "tech",
-      "devto_id: 12\ndevto_url: https://dev.to/example/old\n"
-    );
-    const filename = path.join(directory, "posts/tech/index.md");
-    const original = await fs.readFile(filename, "utf8");
-    await fs.writeFile(
-      path.join(directory, "mock-fetch.mjs"),
-      `
+  it.each([true, false])(
+    "persists a recovered article ID only after a successful retry (%s)",
+    async (success) => {
+      await addPost(
+        "tech",
+        "devto_id: 12\ndevto_url: https://dev.to/example/old\n"
+      );
+      const filename = path.join(directory, "posts/tech/index.md");
+      const original = await fs.readFile(filename, "utf8");
+      await fs.writeFile(
+        path.join(directory, "mock-fetch.mjs"),
+        `
 import fs from "node:fs";
 globalThis.fetch = async (url) => {
   fs.appendFileSync("urls.jsonl", JSON.stringify(url) + "\\n");
@@ -137,27 +136,28 @@ globalThis.fetch = async (url) => {
   if (url.endsWith("/me/all")) return Response.json([{id:123,slug:"tech",title:"tech",url:"https://dev.to/example/tech"}]);
   return Response.json({id:123,url:"https://dev.to/example/tech"}, {status:${success ? 200 : 500}});
 };`
-    );
-    expect(publish("tech", "y\n").status).toBe(success ? 0 : 1);
-    const saved = await fs.readFile(filename, "utf8");
+      );
+      expect(publish("tech", "y\n").status).toBe(success ? 0 : 1);
+      const saved = await fs.readFile(filename, "utf8");
 
-    if (!success) {
-      expect(saved).toBe(original);
+      if (!success) {
+        expect(saved).toBe(original);
 
-      return;
+        return;
+      }
+
+      expect(parseFrontMatter(saved).attributes).toMatchObject({
+        devto_id: 123,
+        devto_url: "https://dev.to/example/tech",
+      });
+      await expectLoadablePost();
+      await fs.writeFile(path.join(directory, "urls.jsonl"), "");
+      expect(publish("tech", "y\n").status).toBe(0);
+      expect(
+        (await fs.readFile(path.join(directory, "urls.jsonl"), "utf8")).trim()
+      ).toBe(JSON.stringify("https://dev.to/api/articles/123"));
     }
-
-    expect(parseFrontMatter(saved).attributes).toMatchObject({
-      devto_id: 123,
-      devto_url: "https://dev.to/example/tech",
-    });
-    await expectLoadablePost();
-    await fs.writeFile(path.join(directory, "urls.jsonl"), "");
-    expect(publish("tech", "y\n").status).toBe(0);
-    expect(
-      (await fs.readFile(path.join(directory, "urls.jsonl"), "utf8")).trim()
-    ).toBe(JSON.stringify("https://dev.to/api/articles/123"));
-  });
+  );
 });
 
 afterEach(async () => {
@@ -199,31 +199,34 @@ function publish(slug?: string, input?: string) {
 }
 
 describe("Dev.to tech-only publishing", () => {
-  it.each([
-    "",
-    "devto_id: 123\n",
-  ])("rejects personal posts by slug, including previously published posts (%s)", async (metadata) => {
-    await addPost("tech");
-    await addPost("personal", `section: personal\n${metadata}`);
+  it.each(["", "devto_id: 123\n"])(
+    "rejects personal posts by slug, including previously published posts (%s)",
+    async (metadata) => {
+      await addPost("tech");
+      await addPost("personal", `section: personal\n${metadata}`);
 
-    const original = await fs.readFile(
-      path.join(directory, "posts/personal/index.md"),
-      "utf8"
-    );
+      const original = await fs.readFile(
+        path.join(directory, "posts/personal/index.md"),
+        "utf8"
+      );
 
-    const result = publish("personal");
+      const result = publish("personal");
 
-    expect(result.status).toBe(1);
-    expect(result.output).toContain(
-      "Only tech blog posts can be sent to Dev.to"
-    );
-    await expect(
-      fs.access(path.join(directory, "requests.jsonl"))
-    ).rejects.toThrow();
-    expect(
-      await fs.readFile(path.join(directory, "posts/personal/index.md"), "utf8")
-    ).toBe(original);
-  });
+      expect(result.status).toBe(1);
+      expect(result.output).toContain(
+        "Only tech blog posts can be sent to Dev.to"
+      );
+      await expect(
+        fs.access(path.join(directory, "requests.jsonl"))
+      ).rejects.toThrow();
+      expect(
+        await fs.readFile(
+          path.join(directory, "posts/personal/index.md"),
+          "utf8"
+        )
+      ).toBe(original);
+    }
+  );
 
   it("excludes personal posts from the interactive menu", async () => {
     await addPost("tech");
@@ -241,23 +244,23 @@ describe("Dev.to tech-only publishing", () => {
     expect(request.body.article.title).toBe("tech");
   });
 
-  it.each([
-    "",
-    "section: tech\n",
-  ])("allows tech posts with supported metadata (%s)", async (metadata) => {
-    await addPost("tech", metadata);
+  it.each(["", "section: tech\n"])(
+    "allows tech posts with supported metadata (%s)",
+    async (metadata) => {
+      await addPost("tech", metadata);
 
-    expect(publish("tech").status).toBe(0);
+      expect(publish("tech").status).toBe(0);
 
-    const request = JSON.parse(
-      await fs.readFile(path.join(directory, "requests.jsonl"), "utf8")
-    );
+      const request = JSON.parse(
+        await fs.readFile(path.join(directory, "requests.jsonl"), "utf8")
+      );
 
-    expect(request.method).toBe("POST");
-    expect(request.body.article.canonical_url).toBe(
-      "https://ruarfff.com/posts/tech"
-    );
-  });
+      expect(request.method).toBe("POST");
+      expect(request.body.article.canonical_url).toBe(
+        "https://ruarfff.com/posts/tech"
+      );
+    }
+  );
 
   it("does not offer unknown sections or an all-personal collection", async () => {
     await addPost("personal", "section: personal\n");

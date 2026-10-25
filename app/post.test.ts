@@ -66,17 +66,17 @@ describe("post loading", () => {
     expect(await getPost("personal")).toMatchObject({ section: "personal" });
   });
 
-  it.each([
-    "tech",
-    "personal",
-  ])("hides %s drafts in production and previews them in development", async (section) => {
-    await addPost("draft", `section: ${section}\ndraft: true\n`);
-    expect(await getPosts()).toEqual([]);
-    await expect(getPost("draft")).rejects.toMatchObject({ status: 404 });
-    vi.stubEnv("NODE_ENV", "development");
-    expect(await getPosts()).toHaveLength(1);
-    expect(await getPost("draft")).toMatchObject({ draft: true, section });
-  });
+  it.each(["tech", "personal"])(
+    "hides %s drafts in production and previews them in development",
+    async (section) => {
+      await addPost("draft", `section: ${section}\ndraft: true\n`);
+      expect(await getPosts()).toEqual([]);
+      await expect(getPost("draft")).rejects.toMatchObject({ status: 404 });
+      vi.stubEnv("NODE_ENV", "development");
+      expect(await getPosts()).toHaveLength(1);
+      expect(await getPost("draft")).toMatchObject({ draft: true, section });
+    }
+  );
 
   it.each([
     "../outside",
@@ -136,36 +136,39 @@ describe("post loading", () => {
     ["description: [bad]", "description"],
     ["draft: 'true'", "draft"],
     ["section: other", "section"],
-  ])("rejects malformed metadata (%s) with a file and field diagnostic", async (line, field) => {
-    const folder = path.join(directory, "posts", "invalid");
-    await fs.mkdir(folder);
+  ])(
+    "rejects malformed metadata (%s) with a file and field diagnostic",
+    async (line, field) => {
+      const folder = path.join(directory, "posts", "invalid");
+      await fs.mkdir(folder);
 
-    const attributes = ["title: Example", "date: 2026-09-13"].filter(
-      (value) => !value.startsWith(`${field}:`)
-    );
+      const attributes = ["title: Example", "date: 2026-09-13"].filter(
+        (value) => !value.startsWith(`${field}:`)
+      );
 
-    await fs.writeFile(
-      path.join(folder, "index.md"),
-      `---\n${[...attributes, line].join("\n")}\n---\nText`
-    );
-    const message = new RegExp(`invalid.*${field}`);
-    await expect(getPost("invalid")).rejects.toThrow(message);
-    await expect(getPosts()).rejects.toThrow(message);
-  });
+      await fs.writeFile(
+        path.join(folder, "index.md"),
+        `---\n${[...attributes, line].join("\n")}\n---\nText`
+      );
+      const message = new RegExp(`invalid.*${field}`);
+      await expect(getPost("invalid")).rejects.toThrow(message);
+      await expect(getPosts()).rejects.toThrow(message);
+    }
+  );
 });
 
 describe("content snapshots", () => {
-  it.each([
-    "production",
-    undefined,
-  ])("reuses content across indexes and details with NODE_ENV=%s", async (mode) => {
-    vi.stubEnv("NODE_ENV", mode);
-    await addPost("tech");
-    const posts = await getPosts();
-    await fs.rm(path.join(directory, "posts"), { recursive: true });
-    expect(await getPosts()).toEqual(posts);
-    expect(await getPost("tech")).toMatchObject({ title: "Example" });
-  });
+  it.each(["production", undefined])(
+    "reuses content across indexes and details with NODE_ENV=%s",
+    async (mode) => {
+      vi.stubEnv("NODE_ENV", mode);
+      await addPost("tech");
+      const posts = await getPosts();
+      await fs.rm(path.join(directory, "posts"), { recursive: true });
+      expect(await getPosts()).toEqual(posts);
+      expect(await getPost("tech")).toMatchObject({ title: "Example" });
+    }
+  );
 
   it("recovers when initialization fails", async () => {
     await addPost("tech", "draft: invalid\n");

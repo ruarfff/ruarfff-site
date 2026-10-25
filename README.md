@@ -37,6 +37,10 @@ the same version. See the [provenance record](tools/oxlint/anti-slop/UPSTREAM.md
 before updating the vendored rules. Biome remains the formatter; vendored
 files are excluded from application checks.
 
+The `postcss-selector-parser` override keeps Tailwind 3 and its plugins on a
+patched parser. Remove it when their dependency ranges include version 7.1.7
+or later. Run `make check` and the production browser tests after changing it.
+
 ## Deployment
 
 Deployed to [Netlify](https://www.netlify.com/).
@@ -188,7 +192,7 @@ cache IDs are used. Health checks, errors, responses that set cookies, and
 local development do not receive this public cache policy. Framework query and
 Vary behavior remains unchanged.
 
-After `npm run build`, run `node --test e2e/production-*.test.mjs` for production
+After `npm run build`, run `node --test e2e/production-*.mjs` for production
 artifact, handler and header checks. These local checks do not prove a Netlify
 cache hit or deploy invalidation; verify those on an authorized preview.
 

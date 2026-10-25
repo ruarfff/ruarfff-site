@@ -51,20 +51,19 @@ describe("code examples", () => {
     );
   });
 
-  it.each([
-    "",
-    "text",
-    "some-unknown-language",
-  ])("handles fences with language '%s'", (language) => {
-    const { container } = renderExample(
-      `\`\`\`${language}\nplain output\n\`\`\``
-    );
+  it.each(["", "text", "some-unknown-language"])(
+    "handles fences with language '%s'",
+    (language) => {
+      const { container } = renderExample(
+        `\`\`\`${language}\nplain output\n\`\`\``
+      );
 
-    expect(container.querySelector("pre code")?.textContent).toBe(
-      "plain output\n"
-    );
-    expect(screen.getByRole("button", { name: "Copy" })).toBeVisible();
-  });
+      expect(container.querySelector("pre code")?.textContent).toBe(
+        "plain output\n"
+      );
+      expect(screen.getByRole("button", { name: "Copy" })).toBeVisible();
+    }
+  );
 
   it("supports indented blocks while keeping inline code inline", () => {
     const { container } = renderExample(

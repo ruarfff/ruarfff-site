@@ -12,42 +12,46 @@ function renderArticle(markdown: string) {
 }
 
 describe("article contents", () => {
-  it.each([
-    "tech-stuff-found-2nd-half-2020",
-    "team-secrets",
-  ])("renders clean headings and working contents for %s", async (slug) => {
-    const source = await fs.readFile(`posts/${slug}/index.md`, "utf8");
-    const { container } = renderArticle(parseFrontMatter(source).body);
-    const toc = container.querySelector('nav[aria-label="Table of contents"]');
-    expect(toc).not.toBeNull();
-    expect(container.querySelectorAll("nav")).toHaveLength(1);
-    expect(container.querySelectorAll("a[name]")).toHaveLength(0);
+  it.each(["tech-stuff-found-2nd-half-2020", "team-secrets"])(
+    "renders clean headings and working contents for %s",
+    async (slug) => {
+      const source = await fs.readFile(`posts/${slug}/index.md`, "utf8");
+      const { container } = renderArticle(parseFrontMatter(source).body);
 
-    for (const heading of container.querySelectorAll("h2, h3")) {
-      expect(heading.textContent).not.toContain("<a");
-      expect(heading.textContent).not.toBe("Contents");
-    }
-
-    for (const link of toc?.querySelectorAll("a") ?? []) {
-      const id = decodeURIComponent(link.hash.slice(1));
-
-      const target = [...container.querySelectorAll("h2, h3")].find(
-        (heading) => heading.id === id
+      const toc = container.querySelector(
+        'nav[aria-label="Table of contents"]'
       );
 
-      expect(target?.textContent?.trim()).toBe(link.textContent);
-    }
+      expect(toc).not.toBeNull();
+      expect(container.querySelectorAll("nav")).toHaveLength(1);
+      expect(container.querySelectorAll("a[name]")).toHaveLength(0);
 
-    for (const link of container.querySelectorAll<HTMLAnchorElement>(
-      'a[href^="#"]'
-    )) {
-      expect(
-        [...container.querySelectorAll("[id]")].some(
-          (node) => node.id === decodeURIComponent(link.hash.slice(1))
-        )
-      ).toBe(true);
+      for (const heading of container.querySelectorAll("h2, h3")) {
+        expect(heading.textContent).not.toContain("<a");
+        expect(heading.textContent).not.toBe("Contents");
+      }
+
+      for (const link of toc?.querySelectorAll("a") ?? []) {
+        const id = decodeURIComponent(link.hash.slice(1));
+
+        const target = [...container.querySelectorAll("h2, h3")].find(
+          (heading) => heading.id === id
+        );
+
+        expect(target?.textContent?.trim()).toBe(link.textContent);
+      }
+
+      for (const link of container.querySelectorAll<HTMLAnchorElement>(
+        'a[href^="#"]'
+      )) {
+        expect(
+          [...container.querySelectorAll("[id]")].some(
+            (node) => node.id === decodeURIComponent(link.hash.slice(1))
+          )
+        ).toBe(true);
+      }
     }
-  });
+  );
 
   it("preserves custom legacy anchors and nests subheadings", () => {
     const { container } = renderArticle(
