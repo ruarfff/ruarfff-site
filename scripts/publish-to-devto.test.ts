@@ -39,6 +39,78 @@ globalThis.fetch = async (url, options) => {
 });
 
 describe("publishing metadata", () => {
+  it.each([
+    { metadata: "draft: true\n", published: false },
+    { metadata: "draft: false\n", published: true },
+    { metadata: "", published: true },
+  ])(
+    "syncs draft status on create and update: %j",
+    async ({ metadata, published }) => {
+      await addPost("tech", metadata);
+      expect(publish("tech").status).toBe(0);
+      expect(publish("tech", "y\n").status).toBe(0);
+
+      const requests = (
+        await fs.readFile(path.join(directory, "requests.jsonl"), "utf8")
+      )
+        .trim()
+        .split("\n")
+        .map((line) => JSON.parse(line));
+
+      expect(requests.map((request) => request.method)).toEqual([
+        "POST",
+        "PUT",
+      ]);
+      expect(requests.map((request) => request.body.article.published)).toEqual(
+        [published, published]
+      );
+    }
+  );
+
+  it("publishes an existing draft after the local draft flag is removed", async () => {
+    await addPost("tech", "draft: true\n");
+    expect(publish("tech").status).toBe(0);
+    const filename = path.join(directory, "posts/tech/index.md");
+    const source = await fs.readFile(filename, "utf8");
+    await fs.writeFile(filename, source.replace("draft: true\n", ""));
+    expect(publish("tech", "y\n").status).toBe(0);
+
+    const requests = (
+      await fs.readFile(path.join(directory, "requests.jsonl"), "utf8")
+    )
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line));
+
+    expect(requests.map((request) => request.body.article.published)).toEqual([
+      false,
+      true,
+    ]);
+    expect(requests[1].url).toBe("https://dev.to/api/articles/123");
+  });
+
+  it.each(['"false"', "null", "1"])(
+    "rejects invalid draft metadata %s before sending a request",
+    async (draft) => {
+      await addPost("tech", `draft: ${draft}\n`);
+      expect(publish("tech").status).toBe(1);
+      await expect(
+        fs.access(path.join(directory, "requests.jsonl"))
+      ).rejects.toThrow();
+    }
+  );
+
+  it("does not publish an existing draft when the update is cancelled", async () => {
+    await addPost("tech", "devto_id: 123\n");
+    const result = publish("tech", "n\n");
+    expect(result.status).toBe(0);
+    expect(result.output).toContain("published");
+    expect(result.output).toContain("Cancelled");
+    await expect(
+      fs.access(path.join(directory, "requests.jsonl"))
+    ).rejects.toThrow();
+  });
+
   it.each([{ id: "123", url: "https://dev.to/example/tech" }, { id: 123 }])(
     "does not rewrite front matter for an invalid publishing response: %j",
     async (response) => {

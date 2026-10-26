@@ -2,13 +2,13 @@
 title: The Ever Changing Profession of Software Engineering
 date: '2026-10-25'
 description: Thoughts on the constant change in software engineering.
+devto_id: 4918506
+devto_url: >-
+  https://dev.to/ruarfff/the-ever-changing-profession-of-software-engineering-2fhb
 topics:
   - Software
   - Change
   - AI
-devto_id: 4918506
-devto_url: >-
-  https://dev.to/ruarfff/the-ever-changing-profession-of-software-engineering-2fel-temp-slug-4314910
 ---
 I love being a software engineer. I feel lucky I get to do it. I got into software a little later in life. I started working young and worked for about 15 years before I got my first software job. I worked in hospitality, construction, farming, sales, landscaping and general manual labour. When I got my first software job, I got my first experience of really loving what I do and seeing a good future for myself.
 

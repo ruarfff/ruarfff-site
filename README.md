@@ -114,6 +114,12 @@ netlify deploy --build --prod
 
 You can publish tech blog posts to Dev.to, automatically setting canonical URLs and converting relative image paths to absolute production URLs. Personal posts are excluded from the menu and cannot be published or updated by slug. Only posts with `section: tech` or no section are eligible.
 
+The local `draft` flag controls Dev.to publication status on both creation and
+update. `draft: true` saves the post as a draft, including unpublishing an
+existing post. `draft: false` or no draft flag publishes it. The update prompt
+shows the target status before sending the request. After removing the draft
+flag, run the publisher again; a Git push only deploys your own site.
+
 To run the script and select a post from an interactive menu:
 
 ```sh

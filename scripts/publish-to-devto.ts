@@ -9,6 +9,7 @@ import { z } from "zod";
 const postAttributes = z.looseObject({
   title: z.string().min(1),
   section: z.enum(["tech", "personal"]).optional(),
+  draft: z.boolean().optional(),
   date: z.union([z.string(), z.date()]).optional(),
   postDate: z.union([z.string(), z.date()]).optional(),
   description: z.string().optional(),
@@ -253,16 +254,18 @@ async function run() {
 
   const { slug, filePath, attributes, body } = selectedPost;
   const isUpdate = !!attributes.devto_id;
+  const published = attributes.draft !== true;
+  const publicationStatus = published ? "published" : "draft";
 
   console.log(`\n\x1b[36mProcessing: ${attributes.title} (${slug})\x1b[0m`);
 
   if (isUpdate) {
     console.log(
-      `Status: Already published to Dev.to (ID: ${attributes.devto_id}, URL: ${attributes.devto_url})`
+      `Status: Existing Dev.to post (ID: ${attributes.devto_id}, URL: ${attributes.devto_url})`
     );
 
     const confirmUpdate = await ask(
-      "Do you want to update the existing Dev.to post? (y/n): "
+      `Update the existing Dev.to post and set its status to ${publicationStatus}? (y/n): `
     );
 
     if (!confirmUpdate.toLowerCase().startsWith("y")) {
@@ -270,7 +273,7 @@ async function run() {
       process.exit(0);
     }
   } else {
-    console.log("Status: Creating a new Dev.to post (as draft)");
+    console.log(`Status: Creating a new Dev.to post (${publicationStatus})`);
   }
 
   // Rewrite images in body
@@ -291,7 +294,7 @@ async function run() {
     article: {
       title: attributes.title,
       body_markdown: processedBody,
-      published: isUpdate ? undefined : false, // For updates, Forem recommends not changing publication status unless intended. For new ones, create as draft (published: false)
+      published,
       canonical_url: canonicalUrl,
       description: attributes.description || "",
       tags: tags.slice(0, 4), // Forem API limits to 4 tags max
