@@ -64,3 +64,5 @@ Use schedules a lot. If you find you are having to check on things, get the agen
 Use static analysis and other deterministic checks more and optimize them for agent use. For example, here's a pre-commit plugin I setup https://github.com/ruarfff/anti-slop-python to catch a lot of common issue I see when working with coding agents. The output is text telling the agent what to do instead.
 
 Those last two are thing you do when trying to build "loops" or graphs or whatever they're being called these days. Automating as much of the workflow as possible is not agentic coding specific, we've always done that and it does really help.
+
+Consider making skills for things like priming an agent with broader architectural information. I don't know if a skill is actually the right thing to use but I do a kind of `/load-everything-about-that-internal-platform-this-thing-uses` where I've documented a bunch of things to load context for the agent specific to certain types of tasks. I have similar skills for debugging certain issues based on the project. Reduce repetition and improve context quality as much as possible.
